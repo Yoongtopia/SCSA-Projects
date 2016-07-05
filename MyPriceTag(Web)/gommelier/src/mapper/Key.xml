@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Key">
+
+	<resultMap type="Key" id="KeyResultMap">
+		<id column="user_id" property="user_id"/>
+		<result column="key" property="key"/>
+		<result column="key_status" property="key_status"/>
+		<result column="key_date" property="key_date"/>
+	</resultMap>
+
+	<insert id="keyInsert" parameterType="map">
+		insert into key values(#{user_id}, #{key})
+	</insert>
+	
+	<select id="certification" parameterType="String" resultType="String">
+		select key from key where user_id = #{value}
+	</select>
+	
+	<select id="keyDelete" parameterType="String">
+		delete from key where user_id = #{value}	
+	</select> 
+</mapper>

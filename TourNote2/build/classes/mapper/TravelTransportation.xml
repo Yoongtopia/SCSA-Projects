@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TravelTransportation">
+
+  <resultMap type="TravelTransportation" id="TravelTransportationResultMap2">
+	  <id column="spot_num" property="spotNum" />
+	  <id column="transportation_order" property="transportationOrder" />
+  </resultMap>
+
+  <resultMap type="TravelTransportation" id="TravelTransportationResultMap">
+	  <id column="spot_num" property="spotNum" />
+	  <id column="transportation_order" property="transportationOrder" />
+	  <result column="transportation_name" property="transportationName" />
+	  <result column="transportation_type" property="transportationType" />
+	  <result column="country_name" property="countryName" />
+  </resultMap>
+  
+    <resultMap type="TravelTransportation" id="TravelTransportationJoinResultMap"
+    extends="TravelTransportationResultMap">
+    	<association property="transportation"
+    	resultMap="Transportation.TransportationResultMap"
+    	></association>
+  </resultMap>
+  
+   <delete id="deleteTravelTransportationBySpotNumAndRecordNum" parameterType="hashmap">
+  delete from travel_transportation where spot_num=#{spotNum} and record_num=#{recordNum}
+  </delete>
+  
+   <select id="selectTravelTransportationListBySpotNumAndRecordNum" parameterType="hashmap" resultMap="TravelTransportationResultMap">
+	select * from travel_transportation where spot_num=#{spotNum} and record_num=#{recordNum}
+	</select>
+
+</mapper>

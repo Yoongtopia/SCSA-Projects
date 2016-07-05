@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Message">
+
+	<insert id="insertMessage" parameterType="Message">
+		insert into MESSAGE
+		values(ms_seq.nextval, #{msTitle}, #{msContent}, sysdate,
+		#{msWriter},#{msTarget},'n')
+	</insert>
+
+	<select id="selectMessageByMsNum" parameterType="int"
+		resultMap="MessageResultMap">
+		select ms_num, ms_title, ms_content, to_char(ms_date,
+		'YYYY.MM.DD') as
+		msDate,ms_writer, ms_target, ms_read
+		from MESSAGE
+		where
+		ms_num=#{value}
+	</select>
+
+	<select id="selectUnReadMessage" resultMap="MessageResultMap">
+		select ms_num,
+		ms_title, ms_content, to_char(ms_date,
+		'YYYY.MM.DD') as
+		msDate,ms_writer, ms_target, ms_read
+		from MESSAGE
+		where
+		ms_read='n'
+		and MS_TARGET = #{ms_target}
+	</select>
+
+
+	<update id="updateMessage" parameterType="Message">
+		update message
+		set
+		ms_read='y'
+		where ms_num=#{msNum}
+	</update>
+
+	<resultMap type="Message" id="MessageResultMap">
+		<id column="ms_num" property="msNum" />
+		<result column="ms_title" property="msTitle" />
+		<result column="ms_content" property="msContent" />
+		<result column="ms_date" property="msDate" />
+		<result column="ms_writer" property="msWriter" />
+		<result column="ms_target" property="msTarget" />
+		<result column="ms_read" property="msRead" />
+	</resultMap>
+</mapper>

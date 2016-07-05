@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Stamp">
+
+<resultMap type="Stamp" id="stampResultMap">
+	<id column="stamp_num" property="stampNum"/>
+	<id column="user_id" property="userId"/>
+	<id column="m_event_id" property="eventId"/>
+	<result column="stamp_get_date" property="stampGetDate"/>
+	<result column="stamp_status" property="stampStatus"/>
+	<result column="stamp_content" property="stampContent"/>
+	<result column="stamp_image" property="stampImage"/>
+	<result column="event_title" property="eventTitle"/>
+</resultMap>
+
+<resultMap type="Stamp" id="stampJoinResultMap" extends="stampResultMap">
+	<association property="event" resultMap="Event.EventResultMap"/>
+</resultMap>
+
+<!-- 관리자의 스탬프 리스트 뿌리기 -->
+<select id="stampListwithMember"  resultMap="stampJoinResultMap">
+select	ms.stamp_num as stamp_num,
+		ms.user_id as user_id,
+		ms.event_id as m_event_id,
+		to_char(ms.stamp_get_date,'yyyy/mm/dd hh24:mi') as stamp_get_date,
+		ms.stamp_status as stamp_status,
+		s.stamp_content as stamp_content,
+		s.stamp_image as stamp_image,	
+		e.event_id,
+		e.event_title as event_title
+from my_stamp ms, event e, stamp s
+where ms.event_id=e.event_id and ms.stamp_num=s.stamp_num		
+</select>
+
+<insert id="insertStamp" parameterType="Stamp">
+insert into my_stamp(stamp_num, user_id, event_id,stamp_get_date, stamp_status)
+values (#{stampNum},#{userId}, #{eventId}, sysdate, 1)
+</insert>
+
+<update id="updateStamp" parameterType="map">
+update my_stamp
+set stamp_status=(stamp_status*-1)
+where user_id = #{userId} and event_id =#{eventId} and stamp_num=#{stampNum}
+</update>
+
+<update id="updateMainStamp" parameterType="map">
+update member
+set main_stamp =  'deleteStamp'
+where user_id = #{userId} 
+</update>
+
+
+<delete id="deleteStamp" parameterType="map">
+delete from my_stamp
+where user_id = #{userId} and event_id =#{eventId} and stamp_num=#{stampNum}
+</delete>
+
+<select id="selectStampListByUserId" parameterType="String" resultMap="stampResultMap">
+select	ms.stamp_num as stamp_num,
+		ms.user_id as user_id,
+		ms.event_id as m_event_id,
+		to_char(ms.stamp_get_date,'yyyy.mm.dd hh24:mi') as stamp_get_date,
+		ms.stamp_status as stamp_status,
+		s.stamp_content as stamp_content,
+		s.stamp_image as stamp_image,	
+		e.event_title as event_title
+from	my_stamp ms, event e, stamp s
+where   s.stamp_num = ms.stamp_num and ms.event_id=e.event_id and user_id=#{value} and stamp_status=1
+order by stamp_get_date desc
+</select>
+
+<select id="selectStampByUserIdStampNumEventId" parameterType="map" resultMap="stampResultMap">
+select    ms.stamp_num as stamp_num, user_id,  ms.event_id as m_event_id, to_char(stamp_get_date,'yyyy.mm.dd hh24:mi') as stamp_get_date, 
+         stamp_status, stamp_content, stamp_image
+from       my_stamp ms, stamp s
+where      ms.stamp_num=s.stamp_num and event_id=#{eventId} and user_id=#{userId} and ms.stamp_num=#{stampNum}
+</select>
+
+
+<!-- 스탬프 명예의 전당 -->
+<select id="selectMemberListForHallOfFame" resultMap="stampListResultMap">
+ select   user_id, count(*) as count 
+ from     my_stamp
+ where    stamp_status=1 and stamp_num not in 'deleteStamp' and stamp_num not in 'defaultStampMember' and stamp_num not in 'defaultStampStaff' and stamp_num not in 'defaultStampAdmin'
+ group by user_id
+ order by count desc
+</select>
+
+
+<resultMap type="Member" id="stampListResultMap">
+<result column="user_id" property="userId"/>
+<result column="count" property="stampCount"/>
+</resultMap>
+
+
+<update id="makeMainStamp" parameterType="map">
+update member
+set main_stamp=#{stampNum}
+where user_id=#{userId} and #{eventId} in (select event_id from my_stamp 
+									 	   where user_id=#{userId} 
+									 	   and stamp_num=#{stampNum})
+</update>
+
+<select id="checkMainStamp" parameterType="map" resultMap="stampResultMap">
+select count(*) 
+from member
+where user_id=#{userId} and main_stamp in (select stamp_num from my_stamp
+										    where event_id = #{eventId}
+										    and stamp_num=#{stampNum} 
+										    and stamp_status=-1)
+
+</select>
+
+<select id="countStampCategory" parameterType="map" resultType="Integer">
+select 	  count(*)
+from 	   my_stamp
+where 	  user_id=#{userId} and stamp_num=#{stampNum}
+</select>
+
+
+
+<select id="selectStampListByUserIdWithPage" parameterType="map" resultMap="stampJoinResultMap">
+select b.*
+			from (select a.*, rownum rnum from (select	ms.stamp_num as stamp_num,
+							ms.user_id as user_id,
+							ms.event_id as m_event_id,
+							to_char(ms.stamp_get_date,'yyyy.mm.dd hh24:mi') as stamp_get_date,
+							ms.stamp_status as stamp_status,
+							s.stamp_content as stamp_content,
+							s.stamp_image as stamp_image,	
+							e.event_title as event_title
+					from	my_stamp ms, event e, stamp s
+					where   s.stamp_num = ms.stamp_num and ms.event_id=e.event_id and user_id=#{value} and stamp_status=1
+					order by stamp_get_date desc) a) b
+where b.rnum between #{startNo} and #{endNo}
+</select>
+
+
+
+<select id="stampListwithMemberWithPage" parameterType="map" resultMap="stampJoinResultMap">
+select b.* 
+		from (select a.*, rownum rnum from (select	ms.stamp_num as stamp_num,
+							ms.user_id as user_id,
+							ms.event_id as m_event_id,
+							to_char(ms.stamp_get_date,'yyyy/mm/dd hh24:mi') as stamp_get_date,
+							ms.stamp_status as stamp_status,
+							s.stamp_content as stamp_content,
+							s.stamp_image as stamp_image,	
+							e.event_id,
+							e.event_title as event_title
+				from 		my_stamp ms, event e, stamp s
+				where 		ms.event_id=e.event_id and ms.stamp_num=s.stamp_num
+				order 		by stamp_get_date desc) a) b	
+where b.rnum between #{startNo} and #{endNo}		
+</select>
+
+
+
+
+
+
+
+</mapper>    

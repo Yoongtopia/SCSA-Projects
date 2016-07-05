@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Review">
+	
+	<resultMap type="Review" id="ReviewResultMap">
+		<id column="review_num" property="reviewNum"/>
+		<result column="r_user_id" property="userId"/>
+		<result column="star_point" property="starPoint"/>
+		<result column="review_reg_date" property="reviewRegDate"/>
+		<result column="review_content" property="reviewContent"/>
+		<result column="review_up_date" property="reviewUpDate"/>
+		<result column="review_image" property="reviewImage"/>
+		<result column="event_id" property="eventId"/>
+		<result column="event_title" property="eventTitle"/>
+	</resultMap>
+	
+	<resultMap type="Review" id="ReviewJoinResultMap" extends="ReviewResultMap">
+	<association property="member" resultMap="Member.MemberResultMap"/>
+	</resultMap>
+	
+	<select id="reviewListwithMember" resultMap="ReviewJoinResultMap">
+		select	r.review_num as review_num,
+				r.user_id as r_user_id,
+				r.star_point as star_point,
+				r.review_reg_date as review_reg_date,
+				r.review_content as review_content,
+				r.review_up_date as review_up_date,
+				r.review_image as review_image,
+				r.event_id as event_id,
+				m.nickname as nickname,
+				m.gender as gender,
+				m.birthday as birthday,
+				m.main_stamp as mainStamp
+		from review r, member m
+		where r.user_id=m.user_id
+	</select>
+
+	<insert id="insertReview" parameterType="Review">
+	insert into review 
+	values(review_seq.nextval,#{userId},#{starPoint},sysdate, #{reviewContent},sysdate, #{reviewImage}, #{eventId})
+	</insert>
+	
+	<update id="updateReview" parameterType="Review">
+	update  review 
+	set     star_point = #{starPoint}, review_content=#{reviewContent}, review_up_date=sysdate,
+	<if test="reviewImage!=null">
+	     	review_image=#{reviewImage}
+	</if>
+	where   review_num=#{reviewNum} 
+	</update>
+
+	<delete id="deleteReview" parameterType="Integer">
+	delete from review where review_num=#{value}	
+	</delete>
+
+	<select id="selectReviewByNoticeNum" parameterType="Integer" resultMap="ReviewResultMap">
+	select review_num, user_id as r_user_id, star_point, to_char(review_reg_date,'yyyy.mm.dd'), 
+	       review_content, to_char(review_up_date, 'yyyy.mm.dd'), review_image, event_id
+	from   review
+	where  review_num=#{value}
+	</select>
+
+
+	<select id="selectReviewListByEventIdRegDate" parameterType="String" resultMap="ReviewJoinResultMap">
+		select	r.review_num as review_num,
+				r.user_id as r_user_id,
+				r.star_point as star_point,
+				to_char(r.review_reg_date,'yyyy.mm.dd hh24:mi') as review_reg_date,
+				r.review_content as review_content,
+				r.review_up_date as review_up_date,
+				r.review_image as review_image,
+				r.event_id as event_id,
+				m.nickname as nickname,
+				m.gender as gender,
+				to_char(m.birthday,'yyyy') as birthday,
+				m.main_stamp as main_stamp
+		from review r, member m
+		where r.user_id=m.user_id and event_id=#{value}
+		order by review_reg_date desc
+	</select>
+
+	<!-- 수정할 것 아직 미완성임 -->
+	<select id="selectReviewListByEventIdStamp" parameterType="String" resultMap="ReviewResultMap">
+	select review_num, user_id as r_user_id, star_point, to_char(review_reg_date,'yyyy.mm.dd'), 
+	       review_content, to_char(review_up_date, 'yyyy.mm.dd') as review_up_date, review_image, event_id
+	from   review
+	where  event_id=#{value}
+	order by review_reg_date 
+	</select>
+	
+	<select id="selectReviewByEventIdAndUserId" parameterType="map" resultMap="ReviewResultMap">
+		select review_num, 
+			   user_id as r_user_id, 
+			   star_point, 
+			   to_char(review_reg_date,'yyyy.mm.dd') as review_reg_date, 
+		       review_content, 
+		       to_char(review_up_date, 'yyyy.mm.dd') as review_up_date, 
+		       review_image, 
+		       event_id
+		from   review
+		where  event_id=#{eventId} and user_id=#{userId}
+	</select>
+
+
+
+	<select id="selectReviewListByUserId" parameterType="String" resultMap="ReviewResultMap">
+	select r.review_num, r.user_id as r_user_id, r.star_point, 
+		   to_char(r.review_reg_date,'yyyy.mm.dd') as review_reg_date, 
+	       r.review_content, to_char(r.review_up_date, 'yyyy.mm.dd') as review_up_date,
+	       r.review_image, r.event_id, e.event_title
+	from   review r, event e
+	where  r.event_id = e.event_id and user_id=#{value}
+	order by r.review_up_date desc
+	</select>
+
+
+	<select id="selectReviewList" resultMap="ReviewResultMap">
+	select   review_num, user_id as r_user_id, star_point, to_char(review_reg_date,'yyyy.mm.dd  hh24:mi:ss') as review_reg_date, 
+	         review_content, to_char(review_up_date, 'yyyy.mm.dd hh24:mi:ss')as review_up_date, review_image, event_id
+	from     review
+	order by review_up_date desc
+	</select>
+</mapper>    

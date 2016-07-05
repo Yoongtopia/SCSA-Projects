@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Tag">
+
+	<resultMap type="Tag" id="TagResultMap">
+		<id column="tag_num" property="tag_num"/>
+		<result column="tag_product_num" property="product_num"/>
+		<result column="tag" property="tag"/>
+		<result column="count" property="count"/>
+	</resultMap>
+	
+	<!-- 태그 자동완성 -->
+	<select id="tagAutoComplete" resultMap="TagResultMap">
+		select distinct tag
+		from tag 
+	</select>
+	
+	<!-- 태그로 다른 태그 리스트 가져오기 -->
+	<select id="selectTagListByTag" parameterType="map" resultMap="TagResultMap">
+		select distinct tag
+		from tag
+		where product_num in (select product_num
+		                      from tag
+		                      <where>
+		                      	<foreach collection="tag" item="item">
+		                      		or tag like '%'||#{item}||'%'
+		                      	</foreach>
+		                      </where>
+							  )
+		minus select distinct tag from tag 
+		<where>
+			<foreach collection="tag" item="item">
+		        or tag = #{item}
+		   	</foreach>
+		</where>
+	</select>
+	
+	<!-- 지역별 태그 리스트 (빈도순) -->
+	<select id="selectTagListBySquare" parameterType="int" resultMap="TagResultMap">
+		select * from(select distinct t.tag, count(*) as count
+						from tag t, product p
+						where t.product_num = p.product_num
+						and p.square_num = ${value}
+						group by tag
+						order by count(*) desc) where rownum &lt;= 31
+	</select>
+	<!-- 작다 태그 시작 괄호랑 같아서 '<'대신 &lt; 사용해야함   -->
+</mapper>

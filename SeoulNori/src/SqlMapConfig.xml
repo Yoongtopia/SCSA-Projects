@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.seoulnori.vo.Member" alias="Member"/>
+		<typeAlias type="com.seoulnori.vo.Event" alias="Event"/>
+		<typeAlias type="com.seoulnori.vo.Notice" alias="Notice"/>
+		<typeAlias type="com.seoulnori.vo.Review" alias="Review"/>
+		<typeAlias type="com.seoulnori.vo.Stamp" alias="Stamp"/>
+		<typeAlias type="com.seoulnori.vo.MyCalendar" alias="MyCalendar"/>
+		<typeAlias type="com.seoulnori.vo.Qna" alias="Qna"/>
+		<typeAlias type="com.seoulnori.vo.Twitter" alias="Twitter"/>
+		<typeAlias type="com.seoulnori.vo.Tweet" alias="Tweet"/>
+		<typeAlias type="com.seoulnori.vo.EventPoint" alias="EventPoint"/>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mapper/Member.xml"/>
+		<mapper resource="mapper/Event.xml"/>
+		<mapper resource="mapper/Notice.xml"/>
+		<mapper resource="mapper/Review.xml"/>
+		<mapper resource="mapper/Stamp.xml"/>
+		<mapper resource="mapper/MyCalendar.xml"/>
+		<mapper resource="mapper/Qna.xml"/>
+		<mapper resource="mapper/EventPoint.xml"/>
+	</mappers>
+
+</configuration>

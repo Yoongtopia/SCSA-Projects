@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Product">
+	
+	<resultMap type="Product" id="ProductResultMap">
+		<id column="product_num" property="product_num"/>
+		<result column="product_price" property="product_price"/>
+		<result column="square_num" property="square_num"/>
+		<result column="product_date" property="product_date"/>
+		<result column="product_status" property="product_status"/>
+		<result column="product_content" property="product_content"/>
+		<result column="puser_id" property="user_id"/>
+	</resultMap>
+	
+	<resultMap type="Product" id="ProductJoinResultMap" extends="ProductResultMap">
+		<collection property="imgList" resultMap="Img.ImgResultMap"/>
+		<collection property="tagList" resultMap="Tag.TagResultMap"/>
+	</resultMap>
+
+	
+	
+	<!-- 상품등록 -->
+	<insert id="productInsert" parameterType="map">
+		insert all
+		into PRODUCT values(PRODUCT_seq.nextval, #{product_price}, #{square_num}, sysdate, 1, #{product_content}, #{user_id})
+		<foreach collection="imgList" item="item" index="index">
+		into IMG values(IMG_seq.nextval+#{index}, PRODUCT_seq.nextval, #{item.img}, #{item.img_main})
+		</foreach>
+		<foreach collection="tagList" item="item" index="index">
+		into TAG values(TAG_seq.nextval+#{index}, PRODUCT_seq.nextval, #{item.tag})
+		</foreach>
+		select * from dual
+	</insert>
+	
+	<!-- 상품삭제 -->
+	<delete id="productDeleteByNum" parameterType="int">
+		delete from PRODUCT where product_num=#{value}
+	</delete>
+	
+	<!-- 아이디로 등록한 상품리스트 -->
+	<select id="productListById" parameterType="String" resultMap="ProductJoinResultMap">
+		select p.product_num as product_num,
+				p.product_price as product_price,
+				p.square_num as square_num,
+				p.product_date as product_date, 
+			   p.product_status as product_status,
+			   p.product_content as product_content,
+			   i.img_num as img_num,
+			   i.img as img,
+			   i.img_main as img_main,
+			   t.tag_num as tag_num,
+			   t.product_num as tag_product_num,
+			   t.tag as tag
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+) and p.product_num=t.product_num and 
+			  p.user_id=#{value}
+		order by p.product_status, p.product_date desc, t.tag_num
+	</select>
+	
+	<!-- 상품 상세보기 -->
+	<select id="productDetailByNum" parameterType="int" resultMap="ProductJoinResultMap">
+		select p.user_id as puser_id,
+				p.product_num,
+				p.product_price,
+				p.square_num,
+				p.product_date, 
+			   p.product_status,
+			   p.product_content,
+			   i.img_num,
+			   i.img,
+			   i.img_main,
+			   t.tag,
+			   t.tag_num
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+)
+		and p.product_num=t.product_num(+) 
+		and p.product_num=#{value}
+		order by t.tag_num
+	</select>
+	
+	<!-- 태그한개로 상품리스트 검색 -->
+	<select id="productListByTag" parameterType="String" resultMap="ProductJoinResultMap">
+		select p.product_num,
+				p.product_price,
+				p.square_num,
+				p.product_date, 
+			   p.product_status,
+			   p.product_content,
+			   i.img_num,
+			   i.img,
+			   i.img_main,
+			   t.tag_num,
+			   t.tag
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+)
+		and p.product_num=t.product_num(+)
+		and p.product_num in (select p.product_num from product p, tag t where p.product_num = t.product_num and t.tag like '%'||#{value}||'%') 
+		order by  t.tag_num, p.product_status, p.product_date desc
+	</select>
+	
+	<!-- 태그한개 + 스꿰어 로 상품리스트 검색 -->
+	<select id="productListByTagAndSquare" parameterType="String" resultMap="ProductJoinResultMap">
+		select p.product_num,
+				p.product_price,
+				p.square_num,
+				p.product_date, 
+			   p.product_status,
+			   p.product_content,
+			   i.img_num,
+			   i.img,
+			   i.img_main,
+			   t.tag_num,
+			   t.tag
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+)
+		and p.product_num=t.product_num(+)
+		and p.square_num=#{square_num}
+		and p.product_num in (select p.product_num from product p, tag t where p.product_num = t.product_num and t.tag like '%'||#{tag}||'%') 
+		order by t.tag_num, p.product_status, p.product_date desc
+	</select>
+	
+	<!-- 지역별 상품리스트 -->
+	<select id="productListBySquare" parameterType="int" resultMap="ProductJoinResultMap">
+		select p.product_num, p.product_price, p.square_num, p.product_date, p.product_status, 
+			   p.product_content, i.img_num, i.img, i.img_main, t.tag, t.tag_num
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+) and p.product_num=t.product_num(+) and 
+			  p.square_num=#{value}
+		order by p.product_status, p.product_date desc, t.tag_num
+		
+	</select>
+	
+	<!-- 태그, 지역, 가격으로 상품리스트 검색 -->
+	
+		
+	<!-- 태그(태그 내 or) and 지역 and 가격으로 상품 리스트 찾기 / 매칭 결과에 보여주기 -->
+	<select id="selectProductListForMatchResult" parameterType="map" resultMap="ProductJoinResultMap">
+<!--  		select *
+		from product p, tag t, img i
+		where p.product_num = t.product_num
+		and p.product_num = i.product_num(+)
+		and (t.product_num in (select product_num
+		                      from tag
+		                      <where>
+		                      	<foreach collection="tag" item="item">
+		                      		and tag like '%'||#{item}||'%'
+		                      	</foreach>
+		                      </where>
+		                      )
+	     and p.square_num = #{square_num}
+	     and p.product_price between 0 and #{product_price}) -->
+	     
+	    select *
+		from product p, tag t, img i
+		where p.product_num = t.product_num
+		and p.product_num = i.product_num(+)
+		and (t.product_num in (
+								<foreach collection="tag" item="item" index="index">
+		                      	    <if test="index != 0">
+								    intersect
+								    </if>
+								    select product_num
+		                      		from tag
+		                      		where tag like '%'||#{item}||'%'
+		                      	</foreach>
+		                      )
+	     and p.square_num = #{square_num}
+	     and p.product_price between 0 and #{product_price})
+	</select>
+	
+	<!-- 상품번호로 상품아이디 찾기 -->
+	<select id="selectUserIdByProductNum" parameterType="String" resultType="String">
+		select user_id
+		from   PRODUCT
+		where  product_num=#{value}
+	</select>
+	
+	<!-- 전제상품리스트 -->
+	<select id="mProductList" resultMap="ProductJoinResultMap">
+		select p.product_num,
+				p.product_price,
+				p.square_num,
+				p.product_date, 
+			   p.product_status,
+			   p.product_content,
+			   i.img_num,
+			   i.img,
+			   i.img_main,
+			   t.tag,
+			   t.tag_num
+		from PRODUCT p, IMG i, TAG t
+		where p.product_num=i.product_num(+)
+		and p.product_num=t.product_num(+)
+		order by p.product_status, p.product_date desc, t.tag_num
+	</select>
+	
+	<select id="lastProduct" resultType="int">
+		select PRODUCT_seq.currval
+		from dual
+	</select>
+	
+	<update id="updateProductStatus" parameterType="map">
+		update product set product_status = #{product_status} where product_num = #{product_num}
+	</update>
+	
+	<select id="findSellingRate" parameterType="String" resultType="String">
+		select count(product_status)
+		from   product
+		where  user_id=#{user_id}
+	</select>
+	
+	<select id="findSellingRate2" parameterType="String" resultType="String">
+		select count(product_status)
+		from   product
+		where  user_id=#{user_id}
+		and    product_status=1
+	</select>
+
+</mapper>

@@ -1,0 +1,361 @@
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	margin-bottom: 10px;
+}
+
+.sortable li {
+	margin: 5px;
+	padding: 5px;
+	width: 80px;
+	height: 80px;
+	float: left;
+	margin-bottom: 18px;
+}
+
+#board {
+	width: 750px;
+	height: 250px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+}
+
+#selector {
+	width: 725px;
+	height: 250px;
+	position: relative;
+	border: 5px;
+	margin-top: 20px;
+	margin-left: 10px;
+	padding-left: 50px;
+	padding-top: 25px;
+	margin-right: 0px;
+	margin-bottom: 10px;
+	background-image: url("/ProjectSCSE/assets/image/selector_cloud.png"); 
+	background-repeat: no-repeat;
+	
+	
+}
+
+.items,.programs {
+	width: 80px;
+	height: 80px;
+	background: transparent/* #8DA763 */;
+	margin: 5px;
+	z-index: 99;
+	list-style: none;
+	padding: 0px;
+	position: relative;
+}
+
+/* 내 캐릭터 */
+.target {
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	z-index: 1;
+	border-radius:2em;
+	
+}
+
+#trash {
+	width: 150px;
+	height: 150px;
+	position: absolute;
+	color: white;
+	background: black;
+	top: 0px;
+	right: 200px;
+}
+
+footer {
+	position: relative;
+}
+
+/* 아코 목표지점 */
+#goal {
+	height: 75px;
+	
+	position: absolute;
+	background-image: url("/ProjectSCSE/assets/image/ako2.png"); 
+	background-repeat: repeat-x;
+	background-position: top center, bottom center;
+	color: black;
+	width: 75px;
+}
+
+#tileBox {
+	padding: 0px;
+	width: 700px;
+	overflow: hidden;
+	position: relative;
+}
+
+.tile {
+	width: 75px;
+	height: 75px;
+	
+	box-sizing: border-box;
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+	float: left;
+}
+
+.voidTile {
+	width: 75px;
+	height: 75px;
+	box-sizing: border-box;
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+	float: left;
+}
+
+.bush {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/maze_back.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.sheep {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/sheep.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.house {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/house.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.corner {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/corner.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.corner2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/corner2.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.corner3 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/corner3.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.corner4 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/corner4.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.cow {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/cow.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.cowreverse {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/cow_reverse.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.pigreverse {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/pig_reverse.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.horsereverse {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/horse_reverse.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.school1 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/school1.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.school2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/school2.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.school3 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/school3.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.school4 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/school4.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.tree {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/tree.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.tree2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/tree2.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.pig {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/pig.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.horse {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/horse.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+
+
+.green {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/back.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+
+.road {
+	background-color: #EFC567;
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+	border: 1px;
+	border-color: white;
+	border-style: dashed;
+}
+
+.moveRight {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/right.png");
+	background-size: 100% 100%; 
+}
+
+.moveLeft {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/left.png");
+	background-size: 100% 100%; 
+}
+
+.moveBackward {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/backward.png");
+	background-size: 100% 100%; 
+}
+
+.moveForward {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/forward.png");
+	background-size: 100% 100%; 
+}
+
+.startFor4 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor4.png");
+	background-size: 100% 100%; 
+}
+
+.endFor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/endFor.png");
+	background-size: 100% 100%; 
+}
+
+.ifLeft {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/ifLeft.png");
+	background-size: 100% 100%; 
+}
+
+.ifRight {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/ifRight.png");
+	background-size: 100% 100%; 
+}
+
+.ifDown {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/ifDown.png");
+	background-size: 100% 100%; 
+}
+
+.ifUp {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/ifUp.png");
+	background-size: 100% 100%; 
+}
+
+.endIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/endIf.png");
+	background-size: 100% 100%; 
+}
+
+.startFor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor.png");
+	background-size: 100% 100%; 
+}
+
+.startFor5 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor5.png");
+	background-size: 100% 100%; 
+}
+
+.startFor6 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor6.png");
+	background-size: 100% 100%; 
+}
+
+.startFor3 {
+	background-image: url("/ProjectSCSE/assets/image/squared_answer/startFor3.png");
+	background-size: 100% 100%; 
+}
+
+.startFor2 {
+	background-image: url("/ProjectSCSE/assets/image/squared_answer/startFor2.png");
+	background-size: 100% 100%; 
+}
+
+.ifRed {
+	background-image: url("/ProjectSCSE/assets/image/Tutorial/ifRed.png");
+	background-size: 100% 100%; 
+}
+
+.ifGreen {
+	background-image: url("/ProjectSCSE/assets/image/Tutorial/ifGreen.png");
+	background-size: 100% 100%; 
+}
+
+.wait {
+	background-image: url("/ProjectSCSE/assets/image/Tutorial/wait.png");
+	background-size: 100% 100%; 
+}
+
+.keepGoing {
+	background-image: url("/ProjectSCSE/assets/image/Tutorial/keepGoing.png");
+	background-size: 100% 100%; 
+}
+
+.plainEndIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/plainEndIf.png");
+	background-size: 100% 100%; 
+}
+
+#equipment {
+	position: relative;
+}
+
+.locomotive {
+	background-image: url("/ProjectSCSE/assets/image/locomotive.png");
+	background-size: 100% 100%;
+	z-index: 100;
+}
+
+.locomotive:active{
+	background-image: url("/ProjectSCSE/assets/image/locomotiveClick.png");
+	background-size: 100% 100%;
+	z-index: 100;
+}
+
+.trainLink {
+	position: absolute;
+
+	height: 10px;
+	width: 21px;
+	top: 40px;
+	left: -16px;
+	background-image: url("/ProjectSCSE/assets/image/chain3.png");
+	background-size: 100%;
+}

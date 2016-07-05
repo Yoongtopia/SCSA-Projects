@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Start project</title>
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<script src="../js/jquery-1.11.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+	font-family: Malgun Gothic;
+	background-color: black;
+}
+.navbar-default{
+	background-color: transparent;
+	border-color: transparent;
+}
+.container-fluid{
+	padding-left: 150px;
+	padding-right: 150px;
+}
+.content{
+	width: 100%;
+	height: 1000px;
+	position: relative;
+	overflow: hidden;
+	background: url("../images/welcome.jpg") 50% 0 repeat fixed;
+	background-size: cover;
+}
+.navbar-default .navbar-brand{
+	color: white;
+}
+.navbar-default .navbar-nav>li>a {
+	color: white;
+}
+.navbar-default .navbar-brand:hover{
+	color: #FF4500;
+}
+.navbar-default .navbar-nav>li>a:hover {
+	color: #FF4500;
+}
+#super_btn{
+	position: absolute;
+	left: -1000px;
+}
+.dropdown-menu{
+	position: fixed;
+	top: 80px;
+	left: -150px;
+	display: block;
+}
+.dropdown-menu >li>a:hover{
+	background-color: white;
+	color: #FF4500;
+}
+.cog{
+	background-color: white;
+	border-radius: 2px;
+	position: absolute;
+	right: -26px;
+	top: 0px;
+	padding: 5px;
+}
+.cog span{
+	font-size: 20px;
+}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Brand</a>
+    </div>
+
+    <div class="collapse navbar-collapse">
+
+      	<ul class="nav navbar-nav navbar-right">
+        	<li><a href="./index.jsp"><b>HOME</b></a></li>
+	        <li><a href="./match.do"><b>MATCH</b></a></li>
+	        <li><a href="./move_regist_product.do"><b>REGIST</b></a></li>
+	        <li><a href="./notice_list.do"><b>NOTICE</b></a></li>
+      	</ul>
+
+      	<form class="navbar-form navbar-right" role="search">
+        	<div class="form-group">
+         		<input type="text" class="form-control" placeholder="Search">
+        	</div>
+        	<button id="super_btn" type="submit" class="btn btn-default">Submit</button>
+      	</form>
+    </div>
+  </div>
+</nav>
+
+<div class="content">
+	
+</div>
+
+<ul class="dropdown-menu">
+	<div class="cog">
+		<span class="glyphicon glyphicon-cog"></span>
+	</div>
+    <li><a href="#">마이페이지</a></li>
+    <li><a href="./move_user_update_form.do">회원정보수정</a></li>
+    <li><a href="./msg_list_by_receiver_id.do">쪽지함</a></li>
+    <li class="divider"></li>
+    <li><a href="#">푸시리스트</a></li>
+    <li><a href="./wish_list_by_id.do">위시리스트</a></li>
+
+</ul>
+
+<script type="text/javascript">
+	$(function(){
+	
+		$(".dropdown-menu").hover(function(){
+			$(this).animate({"left":"+=140px"}, "slow")		
+		}, function(){
+			$(this).animate({"left":"-=140px"}, "slow")
+		})
+	
+	})
+</script>
+</body>
+
+
+
+</html>

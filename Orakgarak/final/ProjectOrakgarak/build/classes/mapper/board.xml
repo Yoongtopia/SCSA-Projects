@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Board">
+
+	<!-- 게시판에 새글을 작성하기 위함입니다. -->
+	<insert id="insertBoard" parameterType="Board">
+			INSERT INTO board(
+						boardNo, 
+						boardWriter, 
+						boardTitle, 
+						boardContent, 
+						boardDate,
+						boardHits, 
+						boardCategory, 
+						boardNotice, 
+						userId)
+				VALUES(#{boardNo},
+					  #{boardWriter},
+					  #{boardTitle},
+					  #{boardContent},
+					  now(),
+					  #{boardHits, jdbcType=INTEGER},
+					  #{boardCategory, jdbcType=VARCHAR},
+					  #{boardNotice, jdbcType=VARCHAR},
+					  #{userId})
+			
+<!-- 			INSERT INTO board(boardNo, boardTitle, boardContent, boardDate, boardCategory)
+			 VALUES(bseq.nextval,#{boardTitle},#{boardContent},sysdate,#{boardCategory})		 -->		
+	</insert>
+
+	<!-- 게시판에 작성한 글을 수정하기 위함입니다. -->
+	<update id="updateBoard" parameterType="Board">
+		UPDATE board 
+		SET boardTitle=#{boardTitle}, boardContent=#{boardContent}, boardCategory=#{boardCategory, jdbcType=VARCHAR}
+		WHERE boardNo=#{boardNo}
+	</update>
+
+	<!-- 게시판에 작성한 글을 삭제하기 위함입니다. -->
+	<delete id="deleteBoard" parameterType="String">
+		DELETE FROM board
+		WHERE boardNo=#{boardNo}
+	</delete>
+
+	<!-- 게시판에 등록된 글의 리스트를 불러오기 위함입니다. -->
+	<select id="selectBoardList" resultType="Board">
+		SELECT boardNo,
+			   boardWriter,
+			   boardTitle,
+			   boardContent,
+			   date_format(boardDate, '%y-%m-%d %H:%i')as boardDate,
+			   boardHits,
+			   boardCategory,
+			   boardNotice,
+			   userId
+		FROM board
+		ORDER BY boardCategory ASC, boardNo DESC
+	</select>
+
+	<!-- 글의 제목을 클릭할 시 상세보기 페이지로 이동하기 위함입니다. -->
+	<select id="selectBoardDetail" parameterType="Integer" resultType="Board">
+		SELECT boardNo,
+			   boardWriter,
+			   boardTitle,
+			   boardContent,
+			   date_format(boardDate, '%y-%m-%d %H:%i')as boardDate,
+			   boardHits,
+			   boardCategory,
+			   boardNotice,
+			   userId
+		FROM board
+		WHERE boardNo=#{value}
+	</select>
+	
+	<!-- 글의 갯수 구하기 -->
+	<select id="getCount" resultType="Integer">
+		select count(*) from board
+	</select>
+	
+	<!-- 이전 글 구하기 -->
+	<select id="prev" resultType="Integer">
+	   <!-- SELECT * FROM(
+			SELECT*FROM board
+			<![CDATA[ WHERE boardNo=(#{value}-1)]]>
+			ORDER BY boardNo DESC)
+		WHERE limit=1-->
+			SELECT boardNo FROM board WHERE boardNo IN ((SELECT MAX(boardNo) 
+			FROM board));
+			
+	</select> 
+	
+	<select id="previousPage" parameterType="Integer" resultType="Board">
+	   <!-- SELECT * FROM(
+			SELECT*FROM board
+			<![CDATA[ WHERE boardNo=(#{value}-1)]]>
+			ORDER BY boardNo DESC)
+		WHERE limit=1-->
+			SELECT * FROM board WHERE boardNo IN ((SELECT MAX(boardNo) 
+			FROM board WHERE boardNo &lt; #{value}));
+			
+	</select> 
+	
+	
+		
+		<!-- 다음 글 구하기 -->
+	<select id="next" resultType="Integer">
+	<!-- 	SELECT * FROM(
+			SELECT*FROM board
+			<![CDATA[ WHERE boardNo=(#{value}+1)]]>
+			ORDER BY boardNo ASC)
+		WHERE limit=1 -->
+			SELECT boardNo FROM board WHERE boardNo IN ((SELECT MIN(boardNo) 
+			FROM board));
+		
+		
+	</select>
+	
+			<!-- 다음 글 구하기 -->
+	<select id="nextPage" parameterType="Integer" resultType="Board">
+	<!-- 	SELECT * FROM(
+			SELECT*FROM board
+			<![CDATA[ WHERE boardNo=(#{value}+1)]]>
+			ORDER BY boardNo ASC)
+		WHERE limit=1 -->
+			SELECT * FROM board WHERE boardNo IN ((SELECT MIN(boardNo) 
+			FROM board WHERE boardNo &gt; #{value}));
+	
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="hit">
+		UPDATE board
+		SET boardHits = boardHits+1
+		WHERE boardNo = #{value}
+	</update>
+	
+	<!-- 리절트맵 -->
+	<resultMap type="Board" id="boardMap">
+		<id column="boardNo" property="boardNo"/>
+		<result column="boardWriter" property="boardWriter"/>
+		<result column="boardTitle" property="boardTitle"/>
+		<result column="boardContent" property="boardContent"/>
+		<result column="boardDate" property="boardDate"/>
+		<result column="boardHits" property="boardHits"/>
+		<result column="boardCategory" property="boardCategory"/>
+		<result column="boardNotice" property="boardNotice"/>
+		<result column="userId" property="userId"/>
+	</resultMap>
+	<!-- 현재페이지의 글 얻어오기 -->
+
+		<select id="getList" parameterType="Integer" resultMap="boardMap">
+		SELECT boardNo,
+			   boardWriter,
+			   boardTitle,
+			   boardContent,
+			   date_format(boardDate, '%y-%m-%d')as boardDate,
+			   boardHits,
+			   boardCategory,
+			   boardNotice,
+			   userId
+		FROM board 
+		ORDER BY boardCategory ASC, boardNo DESC LIMIT #{value},10
+		
+		<!-- <![CDATA[ WHERE limit>=#{startRow} and limit<=#{endRow}]]> -->
+	</select> 
+	
+	<select id="selectBoardTitleAndName" parameterType="String" resultType="Board">
+		SELECT boardNo,
+			   boardWriter,
+			   boardTitle,
+			   boardContent,
+			    date_format(boardDate, '%y-%m-%d %H:%i')as boardDate,
+			   boardHits,
+			   boardCategory,
+			   boardNotice,
+			   userId
+		FROM board
+		WHERE
+		boardTitle like CONCAT('%', #{value}, '%')
+		or userId  like CONCAT('%', #{value}, '%')
+	</select>
+</mapper>

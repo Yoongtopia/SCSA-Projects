@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Info">
+
+<select id="bsList" parameterType="String" resultType="BS">
+	SELECT code,
+		   bs_1 as bs1,
+		   bs_2 as bs2,
+		   bs_14 as bs14,
+		   bs_30 as bs30,
+		   bs_31 as bs31,
+		   bs_44 as bs44,
+		   bs_54 as bs54,
+		   bs_70 as bs70,
+		   bs_72_1 as bs72, <!-- 이부분에 있어서 오류가 있어 맞춰줍니다 -->
+		   bs_97_1_97 as bs97, <!-- 마찬가지로 맞춰줌 -->
+		   bs_121 as bs121,
+		   bs_144 as bs144,
+		   name
+	FROM BS
+	WHERE code = #{value}
+	ORDER BY name DESC 
+	limit 8
+</select>
+
+<select id="isList" parameterType="String" resultType="IS">
+	SELECT code,
+		   is_1 as is1,
+		   is_9 as is9,
+		   is_14 as is14,
+		   is_15 as is15,
+		   is_37 as is37,
+		   is_38 as is38,
+		   is_39 as is39,
+		   is_50 as is50,
+		   is_61 as is61,
+		   is_62 as is62,
+		   is_79 as is79,
+		   is_94 as is94,
+		   is_110 as is110,
+		   is_111 as is111,
+		   is_112 as is112,
+		   is_116 as is116,
+		   is_117 as is117,
+		   is_126 as is126,
+		   name
+	FROM ICS
+	WHERE code = #{value} 
+	ORDER BY name DESC 
+	limit 8
+</select>
+
+<select id="cfList" parameterType="String" resultType="CF">
+	SELECT code,
+		   cf_1 as cf1,
+		   cf_2 as cf2,
+		   cf_3 as cf3,
+		   cf_4 as cf4,
+		   cf_15 as cf15,
+		   cf_24 as cf24,
+		   cf_41 as cf41,
+		   cf_48 as cf48,
+		   cf_49 as cf49,
+		   cf_54 as cf54,
+		   cf_69 as cf69,
+		   cf_70 as cf70,
+		   cf_79 as cf79,
+		   cf_88 as cf88,
+		   cf_95 as cf95,
+		   cf_96 as cf96,
+		   cf_97 as cf97,
+		   name
+	FROM CF
+	WHERE code = #{value}
+	ORDER BY name DESC 
+	limit 8
+</select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Default set of monitored resources -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+	<Resource name="jdbc/OracleDB" auth="Container"
+	              type="javax.sql.DataSource" 
+	              driverClassName="oracle.jdbc.driver.OracleDriver"
+	              url="jdbc:oracle:thin:@70.12.109.63:1521:xe"
+	              username="nori" password="nori" 
+	              maxActive="5" maxIdle="2" maxWait="-1"/>
+		
+</Context>

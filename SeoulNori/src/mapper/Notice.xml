@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Notice">
+
+	<resultMap type="Notice" id="NoticeResultMap">
+		<id column="notice_num" property="noticeNum"/>
+		<result column="notice_image" property="noticeImage"/>
+		<result column="notice_reg_date" property="noticeRegDate"/>
+		<result column="notice_title" property="noticeTitle"/>
+		<result column="notice_content" property="noticeContent"/>
+		<result column="notice_up_date" property="noticeUpDate"/>
+		<result column="user_id" property="userId"/>	
+	</resultMap>
+	
+	<resultMap type="Notice" id="NoticeJoinResultMap" extends="NoticeResultMap">
+		<association property="member" resultMap="Member.MemberResultMap"/>
+	</resultMap>
+
+
+	<insert id="insertNotice" parameterType="Notice">
+		insert into Notice 
+		(notice_num, notice_image, notice_reg_date, notice_title, notice_content, notice_up_date, user_id)
+		values(notice_seq.nextval,#{noticeImage},sysdate,#{noticeTitle},#{noticeContent}, sysdate,#{userId})
+	</insert>
+	
+	<update id="updateNotice"  parameterType="Notice">
+		update notice
+		set    notice_image=#{noticeImage}, notice_title=#{noticeTitle}, notice_content=#{noticeContent}, 
+		       notice_up_date=sysdate
+		where  notice_num=#{noticeNum} 
+	</update>
+	
+	<delete id="deleteNotice" parameterType="Integer">
+		delete from Notice where notice_num=#{value}
+	</delete>
+	
+	<select id="selectNoticeByNoticeNum" parameterType="Integer" resultMap="NoticeJoinResultMap">
+		select n.notice_num, 
+					n.notice_image, 
+					to_char(n.notice_reg_date,'yyyy/mm/dd hh24:mi:ss') as notice_reg_date, 
+					n.notice_title,
+					n.notice_content, 
+		       		to_char(n.notice_up_date, 'yyyy/mm/dd hh24:mi:ss') as notice_up_date, 
+		       		n.user_id, 
+					m.nickname
+		from notice n, member m
+		where  n.user_id=m.user_id(+)
+			and n.notice_num=#{value}
+	</select>
+	
+	<select id="selectNoticeList" resultMap="NoticeJoinResultMap">
+		select n.notice_num, 
+					n.notice_image, 
+					to_char(n.notice_reg_date,'yyyy/mm/dd') as notice_reg_date, 
+					n.notice_title,
+					n.notice_content, 
+					to_char(n.notice_up_date, 'yyyy/mm/dd') as notice_up_date, 
+					n.user_id, 
+					m.nickname
+		from notice n, member m 
+		where n.user_id=m.user_id(+)
+		order by n.notice_num desc
+	</select>
+	
+	
+	<select id="selectNoticeListWithPage" parameterType="map" resultMap="NoticeJoinResultMap">
+		select b.* 
+		from  (select a.*, rownum rnum 
+			   from   (select n.notice_num as notice_num, 
+							  n.notice_image as notice_image, 
+							  to_char(n.notice_reg_date,'yyyy/mm/dd') as notice_reg_date, 
+						 	  n.notice_title as notice_title,
+							  n.notice_content as notice_content, 
+							  to_char(n.notice_up_date, 'yyyy/mm/dd') as notice_up_date, 
+							  n.user_id as user_id, 
+							  m.nickname as nickname
+						from notice n, member m 
+						where n.user_id=m.user_id(+)
+						order by n.notice_num desc) a) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	
+	<select id="searchNoticeByTitle" parameterType="String" resultMap="NoticeJoinResultMap">
+		select n.notice_num, 
+					n.notice_image, 
+					to_char(n.notice_reg_date,'yyyy/mm/dd') as notice_reg_date, 
+					n.notice_title,
+					n.notice_content, 
+					to_char(n.notice_up_date, 'yyyy/mm/dd') as notice_up_date, 
+					n.user_id, 
+					m.nickname
+		from notice n, member m 
+		where n.user_id=m.user_id(+)
+			and n.notice_title like '%'||#{value}||'%'
+		order by n.notice_num desc
+	</select>
+
+	<select id="selectPageCount" resultType="int"> 
+		select count(*) from notice
+	</select>
+
+
+
+</mapper>    

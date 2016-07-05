@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="EventPoint">
+
+	<resultMap type="EventPoint" id="EventPointResultMap">
+		<id column="event_id" property="eventId"/>
+		<result column="naver_trend_point" property="naverTrendPoint"/>
+		<result column="tweet_point" property="tweetPoint"/>
+	</resultMap>
+	
+	<insert id="insertEventPoint" parameterType="EventPoint">
+		insert into event_point values(#{eventId}, #{naverTrendPoint}, #{tweetPoint})
+	</insert>
+	
+	<update id="updateNaverTrendPoint" parameterType="EventPoint">
+		update event_point set naver_trend_point=#{naverTrendPoint} where event_id=#{eventId}
+	</update>
+	
+	<update id="updateTweetPoint" parameterType="EventPoint">
+		update event_point set tweet_point=#{tweetPoint} where event_id=#{eventId}	
+	</update>
+	
+	<update id="updateAllPoint" parameterType="EventPoint">
+		update event_point set naver_trend_point=#{naverTrendPoint},tweet_point=#{tweetPoint} where event_id=#{eventId}
+	</update>
+	
+	<select id="selectEventPointByEventId" parameterType="String" resultMap="EventPointResultMap">
+		select * from event_point where event_id=#{value}
+	</select>
+
+</mapper>

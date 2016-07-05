@@ -1,0 +1,94 @@
+@CHARSET "UTF-8";
+
+body{
+	background-color:#faf1e0 !important;
+}
+
+
+
+#whitesologo{
+
+}
+
+#ourvision{
+	font-family: 'Nanum Gothic';
+	
+	font-size: 1.0em;
+	opacity:0.8;
+}
+
+#ourvision strong{
+	font-size:1.3em;
+}
+
+#explain{
+	
+	margin-top: 50px;
+	margin-bottom: 30px;
+	
+}
+
+#pentagonImg{
+	width:400px;
+	opacity:0.9;
+	margin-top:30px;
+}
+
+section p{
+	text-align: center;
+}
+
+/* #intro {
+	background-color: #3ec7c2;
+	margin: 0;
+	width: 100%;
+	padding-bottom: 20%;
+}
+
+#logo {
+	width: 150px;
+	position: static;
+	margin-left:45%;
+	margin-top:200px;
+}
+
+.content {
+	width: 100%;
+	padding-bottom: 35%;
+	background-color: white;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	margin: 50px;
+	position: relative;
+}
+
+.contents {
+	margin: 0;
+	width: 100%;
+	position: relative;
+	padding-bottom: 35%;
+	background-color: #f2f2f2;
+}
+
+h1 {
+	color: white;
+	margin-left: 41%;
+}
+
+#footer {
+	background-color: black;
+	padding-bottom: 10%;
+	color:#f2f2f2;
+}
+
+#user{
+	position:relative;
+	margin-left: 40%;
+}
+
+span{
+	position:relative;
+} */

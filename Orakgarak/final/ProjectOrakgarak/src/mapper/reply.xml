@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reply">
+	
+	<!-- 게시글에 댓글을 달기 위함입니다. -->
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO 
+			   reply(replyNo,
+			   		 replyDate,
+			   		 replyContent,
+			   		 replyWriter,
+			   		 userId,
+			   		 boardNo)
+			   VALUES(#{replyNo},
+			    	  now(),
+			    	  #{replyContent},
+			    	  #{replyWriter, jdbcType=VARCHAR},
+					  #{userId, jdbcType=VARCHAR},
+					  #{boardNo})
+	</insert>
+
+	<!-- 댓글 수정을  위함입니다. -->
+	<update id="updateReply" parameterType="Reply">
+		UPDATE reply
+		SET replyContent=#{replyContent}
+		WHERE userId=#{userId}
+	</update>
+
+	<!-- 댓글 삭제를 위함입니다. -->
+	<delete id="deleteReply" parameterType="Integer">
+		DELETE FROM reply
+		WHERE replyNo=#{value}
+	</delete>
+	
+	<!-- 댓글들을 리스트로 뿌려주기 위함입니다. -->
+	<select id="selectReplyList" resultType="Reply">
+		SELECT replyNo,
+			   DATE_FORMAT(replyDate, '%y-%m-%d %H:%i')as replyDate,
+			   replyContent,
+			   replyWriter,
+			   userId,
+			   boardNo
+		FROM reply
+	</select>
+	
+	<select id="selectReply" parameterType="Integer" resultType="Reply">
+		SELECT replyNo,
+			   DATE_FORMAT(replyDate, '%y-%m-%d %H:%i')as replyDate,
+			   replyContent,
+			   replyWriter,
+			   userId,
+			   boardNo
+		FROM reply
+		WHERE boardNo=${value}
+		ORDER BY replyNo DESC
+	</select>
+ 
+	<select id="selectReplyNo" parameterType="Integer" resultType="Reply">
+		SELECT replyNo,
+			   DATE_FORMAT(replyDate, '%y-%m-%d %H:%i')as replyDate,
+			   replyContent,
+			   replyWriter,
+			   userId,
+			   boardNo
+		FROM reply
+		WHERE replyNo=${value}
+		ORDER BY replyNo DESC
+	</select>
+	
+	<!-- 글의 갯수 구하기 -->
+	<select id="getCount" resultType="Integer">
+		SELECT count(replyNo)
+		FROM reply
+		WHERE boardNo=#{value}
+	</select>
+	
+	<!-- 리절트맵 -->
+	<resultMap type="Reply" id="replyMap">
+		<id column="replyNo" property="replyNo"/>
+		<result column="replyDate" property="replyDate"/>
+		<result column="replyContent" property="replyContent"/>
+		<result column="replyWriter" property="replyWriter"/>
+		<result column="userId" property="userId"/>
+		<result column="boardNo" property="boardNo"/>
+	</resultMap>
+	
+	<!-- 현재페이지의 글 얻어오기 -->
+
+	<select id="getReplyList" parameterType="map" resultMap="replyMap">
+	SELECT replyNo,
+		   DATE_FORMAT(replyDate, '%y-%m-%d %H:%i')as replyDate,
+		   replyContent,
+		   replyWriter,
+		   userId,
+		   boardNo
+	FROM reply 
+	WHERE boardNo = #{boardNo}
+	ORDER BY replyNo DESC LIMIT #{pageNum},10
+	
+	</select>
+	
+	
+</mapper>

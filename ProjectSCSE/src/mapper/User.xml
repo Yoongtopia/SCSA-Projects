@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="User">
+
+	<insert id="insertStudent" parameterType="Student">
+		insert into suser
+		values(#{userId}, #{password}, #{sName}, sysdate, 'y',
+		#{grade},null,null,null,'s',#{schoolNum}, sysdate, 0 , #{ip})
+	</insert>
+
+	<insert id="insertParent" parameterType="Leader">
+		insert into suser
+		values(#{userId}, #{password}, #{sName}, sysdate, 'n', null, #{email},
+		#{phone}, #{conf}, 'p', #{schoolNum}, sysdate, 0, #{ip})
+	</insert>
+
+	<insert id="insertTeacher" parameterType="Leader">
+		insert into suser
+		values(#{userId}, #{password}, #{sName}, sysdate, 'n', null, #{email},
+		#{phone}, #{conf} , 't', #{schoolNum}, sysdate, 0, #{ip})
+	</insert>
+
+	<select id="loginUser" parameterType="HashMap" resultMap="StudentLeaderJoinMap">
+		select
+		u.userId, u.password, u.sname, u.rdate, u.check_connect, u.grade,
+		u.email, u.phone,
+		u.conf, u.utype, u.school_num, s.school_name
+		from
+		suser u, school s
+		where u.userId=#{userId}
+		and u.password=#{password}
+		and u.school_num=s.school_num
+	</select>
+
+	<!-- <select id="loginLeader" parameterType="HashMap" resultMap="LeaderSchoolJoinMap"> 
+		select userId, password, sname, rdate, check_connect, grade, email, phone, 
+		conf, utype, school_name from suser, school where suser.school_num=school.school_num 
+		and userId=#{userId} and password=#{password} </select> -->
+
+	<update id="loginValidUser" parameterType="HashMap">
+		update suser
+		set
+		check_connect = 'y'
+		where userId=#{userId}
+		and password=#{password}
+	</update>
+
+
+	<select id="emailDomain" parameterType="hashMap" resultType="String">
+		select substr(#{email}, 1, instr(#{email}, '@', 1)-1)
+		from suser
+		where
+		userId=#{userId}
+	</select>
+
+	<update id="logoutUser" parameterType="String">
+		update suser
+		set
+		check_connect = 'n'
+		where userId=#{userId}
+	</update>
+
+	<delete id="deleteUser" parameterType="String">
+		delete from suser where
+		userid=#{value}
+	</delete>
+
+	<update id="updateUser" parameterType="HashMap">
+		update suser
+		set
+		password=#{password, jdbcType=VARCHAR},
+		sNAME = #{sName,
+		jdbcType=VARCHAR},
+		grade = #{grade, jdbcType=INTEGER},
+		EMAIL = #{email,
+		jdbcType=VARCHAR},
+		PHONE = #{phone, jdbcType=VARCHAR},
+		school_num=#{schoolNum, jdbcType=VARCHAR}
+		where userId = #{userId}
+	</update>
+
+	<update id="updateForVerifying" parameterType="HashMap">
+		update suser
+		set
+		conf = 'y'
+		where userId = #{userId}
+		and email= #{email}
+		and conf =
+		#{conf}
+	</update>
+
+	<update id="updateVerify" parameterType="HashMap">
+		update suser
+		set conf =
+		'y'
+		where userId = #{userId}
+		and email= #{email}
+	</update>
+
+	<select id="selectStudentListBySchool" parameterType="String"
+		resultMap="StudentSchoolJoinMap">
+		select u.userId, u.sname, s.school_name
+		from suser u, school
+		s
+		where s.school_num = u.school_num and u.school_num=#{value} and
+		u.utype='s'
+	</select>
+
+	<select id="searchStudentBySchoolOrStudent" parameterType="HashMap"
+		resultMap="StudentResultMap">
+		select u.userid,
+		u.sname,
+		u.grade,
+		s.school_name
+		from suser u,
+		school s
+		where u.school_num=s.school_num(+)
+		and utype='s'
+		<if test="sName != null">
+			and u.sname like '%'||#{sName}||'%'
+		</if>
+		<if test="schoolName != null">
+			and s.school_name like '%'||#{schoolName}||'%'
+		</if>
+
+	</select>
+	
+	<!--  최종 접속일 체크 -->
+	<select id="selectFinalAccess" parameterType="String" resultType="int">
+		select trunc(sysdate)-trunc(final_access)
+		from   suser 
+		where  userid=#{userId}
+	</select>
+	
+	<!-- 연속출석 추가 -->
+	<update id="updateAttendanceAdd" parameterType="String">
+		update suser
+		set attendance_check = attendance_check + 1
+		where userId=#{userId}
+	</update>
+	
+	<!-- 연속출석 reset -->
+	<update id="updateAttendanceReset" parameterType="String">
+		update suser
+		set attendance_check = 1
+		where userId=#{userId}
+	</update>
+	
+	<!-- 연속출석 일수 체크 -->
+	<select id="selectAttendanceCheck" parameterType="String" resultType="int">
+		select attendance_check
+		from   suser 
+		where  userid=#{userId}
+	</select>
+	
+	<!-- 최종 접속일 갱신 -->
+	<update id="updateFinalAccess" parameterType="String">
+		update suser
+		set final_access = sysdate
+		where userId=#{userId}
+	</update>
+	
+	<!-- 아이디 중복체크용 셀렉트 -->
+	<select id="selectIdByUserId" parameterType="String" resultMap="UserResultMap">
+		select *
+		from   suser 
+		where  userid=#{userId}
+	</select>
+	
+	<!-- 학생들 폰을 이용해서 아이피 업데이트 -->
+	<update id="updateIp" parameterType="HashMap">
+		update suser
+		set ip = #{ip} 
+		where userId = #{userId}
+	</update>
+
+
+
+	<!-- 그룹에 학생을 추가하려고 검색을 하면 학생이름을 치던지 학교이름을 치면 해당 학생들이 쭉 나와야 함. -->
+	<!-- <select id="selectStudentBySchool" parameterType="hashmap" resultMap="JoinJoinMap"> 
+		select u.userId, u.sname, u.grade,s.school_name, g.group_name from suser 
+		u, school s, ssgroup g, user_group ug where u.school_num=s.school_num and 
+		s.school_num=#{schoolNum} and u.sname like '%'||#{sName}||'%' and ug.userId(+)=u.userId 
+		and g.group_num=ug.group_num </select> <resultMap type="User" id="JoinJoinMap" 
+		extends="UserResultMap"> <result property="userSchool.schoolName" column="school_name"></result> 
+		<result property="userGroup.groupName" column="group_name"></result> </resultMap> -->
+
+	<resultMap type="User" id="UserResultMap">
+		<id column="userId" property="userId" />
+		<result column="password" property="password" />
+		<result column="sname" property="sName" />
+		<result column="rdate" property="rDate" />
+		<result column="check_connect" property="checkConnect" />
+		<result column="final_access" property="finalAccess" />
+		<result column="school_num" property="schoolNum" />
+		<result column="uType" property="uType" />
+		<result column="school_name" property="schoolName" />
+		<result column="chap_num" property="chapNum" />
+		<result column="quiz_num" property="quizNum" />
+		<result column="ip" property="ip" />
+	</resultMap>
+
+
+	<resultMap type="Leader" id="LeaderResultMap" extends="UserResultMap">
+		<result column="email" property="email" />
+		<result column="phone" property="phone" />
+		<result column="conf" property="conf" />
+	</resultMap>
+
+	<resultMap type="Student" id="StudentResultMap" extends="UserResultMap">
+		<result column="grade" property="grade" />
+	</resultMap>
+
+	<resultMap type="User" id="StudentLeaderJoinMap" extends="UserResultMap">
+		<result property="userStudent.grade" column="grade" />
+		<result property="userLeader.email" column="email" />
+		<result property="userLeader.phone" column="phone" />
+		<collection property="userSchool" resultMap="School.SchoolResultMap" />
+	</resultMap>
+
+	<resultMap type="Student" id="GroupStudentProgressJoinMap"
+		extends="StudentResultMap">
+		<association property="stuSchool" resultMap="School.SchoolResultMap" />
+		<collection property="stuProgress" resultMap="Progress.ProgressResultMap" />
+	</resultMap>
+
+
+	<!--학생과 학교정보를 함께 출력하기위한 맵핑 -->
+	<resultMap type="Student" id="StudentSchoolJoinMap" extends="StudentResultMap">
+		<association property="stuSchool" resultMap="School.SchoolResultMap" />
+		<!-- <result property="stuSchool.schoolName" column="school_name"/> -->
+	</resultMap>
+
+	<!-- 리더와 학교정보를 함께 출력하기위한 맵핑 -->
+	<resultMap type="Leader" id="LeaderSchoolJoinMap" extends="LeaderResultMap">
+		<association property="leaderSchool" resultMap="School.SchoolResultMap" />
+	</resultMap>
+
+</mapper>

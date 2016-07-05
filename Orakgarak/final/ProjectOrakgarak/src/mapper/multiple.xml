@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Multiple">
+
+	<select id="selectIndustryMultiple" parameterType="Integer" resultType="Float">
+		select industry_multiple from category
+		where nindustry_code=#{value}
+	</select>
+
+	<select id="selectMultipelList" parameterType="String" resultType="Multiple" >
+		select stock_name as stockName,
+			   multiple_result as multipleResult
+		from multiple
+		where industry_code=#{value}
+		Limit 10
+	</select>
+	
+	<select id="selectMultiple" parameterType="String" resultType="Multiple" >
+		select stock_code as stockCode,
+			   stock_name as stockName,
+			   industry_code as industryCode,
+			   industry_name as industryName,
+			   debt,
+			   cash,
+			   net_debt as netDebt,
+			   market_value as marketValue,
+			   ev,
+			   ebitda,
+			   multiple_result as multipleResult
+		from multiple
+		where stock_code=#{value}
+	</select>
+	
+	<select id="selectIndustryCodebyStockCode" parameterType="String" resultType="String">
+		select industry_code from multiple
+		where stock_code=#{value}
+	</select>
+	
+	<update id="updateMultiple" parameterType="Multiple">
+		update multiple
+		set ev=#{ev}, market_value=#{marketValue}, multiple_result=#{multipleResult}
+		where stock_code=#{stockCode}
+	</update>
+	
+	<select id="selectCategory" parameterType="String" resultMap="categoryResult">
+		select nindustry_code,
+			   industry_name
+		from category
+		where kindustry_code=#{value}
+	</select>
+	
+	<resultMap type="HashMap" id="categoryResult">
+		<result property="key" column="nindustry_code"/>
+		<result property="value" column="industry_name"/>
+	</resultMap>
+	
+		<select id="selectMultipleCodeOrName" parameterType="String" resultType="Multiple">
+		select stock_code as stockCode,
+			   stock_name as stockName,
+			   industry_code as industryCode,
+			   industry_name as industryName,
+			   debt,
+			   cash,
+			   net_debt as netDebt,
+			   market_value as marketValue,
+			   ev,
+			   ebitda,
+			   multiple_result as multipleResult
+		from multiple
+		where
+		stock_code = #{value}
+		or stock_name like CONCAT('%', #{value}, '%')
+	</select>
+	
+	<select id="selectMultipleList" resultType="Multiple">
+		select stock_code as stockCode,
+			   stock_name as stockName,
+			   industry_code as industryCode,
+			   industry_name as industryName,
+			   debt,
+			   cash,
+			   net_debt as netDebt,
+			   market_value as marketValue,
+			   ev,
+			   ebitda,
+			   multiple_result as multipleResult
+		from multiple
+	</select>
+	
+	<select id="selectIndustry" parameterType="String" resultType="Industry">
+		select * from INDUSTRY where wicscode=#{value}
+	</select>
+	
+	<select id="selectStockName" parameterType="String" resultType="String">
+		select stock_name from multiple where stock_code=#{value}
+	</select>
+	
+	</mapper>

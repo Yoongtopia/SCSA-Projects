@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="Transportation">
+ 	<resultMap type="Transportation" id="TransportationResultMap">
+ 		<id column="transportation_type" property="transportationType"/>
+ 		<id column="transportation_name" property="transportationName"/>
+		<id column="country_name" property="countryName"/>
+		<result column="city_name" property="cityName"/>
+		<result column="link" property="link"/> 
+ 	</resultMap>
+
+ 	<resultMap type="Transportation" id="TransportationResultMap2">
+ 		<result column="transportation_type" property="transportationType"/>
+ 		<result column="transportation_name" property="transportationName"/>
+		<result column="country_name" property="countryName"/>
+		<result column="city_name" property="cityName"/>
+		<result column="link" property="link"/> 
+ 	</resultMap>
+
+ 	<select id="selectTransportationListByTypeAndCountry" parameterType="hashmap" resultMap="TransportationResultMap">
+ 		select * from transportation where transportation_type=#{transportationType} and country_name=#{countryName}
+ 	</select>
+ 	
+ 	<select id="listCount" resultType="int">
+    		select count(*) from transportation
+    	</select>
+ 	
+ 	<select id="selectTransportationList" parameterType="hashMap" resultMap="TransportationResultMap">
+ 		select * from(select a.*, rownum as rnum from
+			(select  
+				transportation_type, 
+				transportation_name, 
+				country_name, 
+				city_name, 
+				link
+				from transportation order by link desc
+				) a) 
+				where rnum between #{startNo} and #{endNo}
+ 	</select>
+ 	
+ 	<insert id="insertTravelTransportation" parameterType="hashmap">
+ 		insert into travel_transportation values (#{spotNum},#{transportationOrder},#{recordNum},#{countryName},#{transportationName},#{transportationType})
+ 	</insert>
+ 	
+ 	<select id="countTransportationListByName" parameterType="String" resultType="int">
+ 		select count(*) from transportation where transportation_name=#{value}
+ 	</select>
+ 	
+ 	<insert id="insertTransportation" parameterType="Transportation">
+ 		insert into transportation values (#{transportationType},#{transportationName},#{countryName},null,null)
+ 	</insert>
+ 	
+ 	<insert id="insertTransportationByAdmin" parameterType="Transportation">
+ 		insert into transportation values (#{transportationType},#{transportationName},#{countryName},#{cityName},#{link})
+ 	</insert>
+ 	
+ 	<delete id="deleteTransportation" parameterType="map">
+ 		delete from transportation 
+ 		where transportation_type=#{transportationType}
+ 		 and transportation_name=#{transportationName}
+ 		 and country_name=#{countryName}
+ 	</delete>
+ 	
+ 	<update id="updateTransportation" parameterType="Transportation">
+ 		update transportation set city_name=#{cityName}, link=#{link} where transportation_type=#{transportationType} and transportation_name=#{transportationName} and country_name=#{countryName}
+ 	</update>
+ 
+ 
+ 
+ </mapper>

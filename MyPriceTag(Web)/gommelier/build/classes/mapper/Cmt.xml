@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Cmt">
+
+	<resultMap type="Cmt" id="CmtResultMap">
+		<id column="cmt_num" property="cmt_num"/>
+		<result column="cmt_content" property="cmt_content"/>
+		<result column="cmt_date" property="cmt_date"/>
+		<result column="product_num" property="product_num"/>
+		<result column="user_id" property="user_id"/>
+		<result column="parent_num" property="parent_num"/>
+	</resultMap>
+	
+	<!-- 댓글 등록 -->
+	<insert id="cmtInsert" parameterType="Cmt">
+		<choose>
+			<when test="parent_num != 0">
+			insert into CMT values(CMT_seq.nextval, #{cmt_content}, SYSDATE, #{product_num}, 
+			#{user_id}, #{parent_num})
+			</when>
+			<otherwise>
+			insert into CMT values(CMT_seq.nextval, #{cmt_content}, SYSDATE, #{product_num}, 
+			#{user_id}, null)
+			</otherwise>
+		</choose>
+	</insert>
+	
+	<!-- 댓글 수정 -->
+	<update id="cmtUpdate" parameterType="map">
+	update CMT 
+	set cmt_content=#{cmt_content}, cmt_date=SYSDATE
+	where cmt_num=#{cmt_num}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="cmtDelete" parameterType="int">
+	delete from CMT
+	where cmt_num=#{value}
+	</delete>
+	
+	<!-- 상품번호로 댓글리스트 찾기 -->
+	<select id="cmtListByProductNum" parameterType="int" resultMap="CmtResultMap">
+		select cmt_num, cmt_content, cmt_date, product_num, user_id, parent_num
+		from CMT where product_num = #{value} and parent_num is null
+	</select>
+	
+	<!-- 댓글번호로 자식댓글 찾기 -->
+	<select id="cmtChildListByParentNum" parameterType="int" resultMap="CmtResultMap">
+		select cmt_num, cmt_content, cmt_date, product_num, user_id, parent_num
+		from CMT where parent_num = #{value}
+	</select>
+</mapper>

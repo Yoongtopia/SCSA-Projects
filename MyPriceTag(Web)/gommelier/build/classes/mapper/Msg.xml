@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Msg">
+
+	<resultMap type="Msg" id="MsgResultMap">
+		<id column="msg_num" property="msg_num"/>
+		<result column="msg_content" property="msg_content"/>
+		<result column="msg_date" property="msg_date"/>
+		<result column="user_id_sender" property="user_id_sender"/>
+		<result column="user_id_receiver" property="user_id_receiver"/>
+		<result column="msg_status" property="msg_status"/>
+	</resultMap>
+
+	<!-- 쪽지등록 -->
+	<insert id="msgSend" parameterType="map">
+	insert all
+	into MSG values(MSG_seq.nextval, #{msg_content}, SYSDATE, #{user_id_sender}, #{user_id_receiver}) 
+	into MSG_RECEIVER values(MSG_seq.nextval, #{user_id_receiver}, 1)
+	into MSG_SENDER values(MSG_seq.nextval, #{user_id_sender}, 1)
+	select * from dual
+	</insert>
+
+	<!-- 쪽지번호로 상세보기 -->
+	<select id="msgDetailByNum" parameterType="int" resultMap="MsgResultMap">
+	select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+		   r.msg_status
+	from MSG m, MSG_RECEIVER r
+	where m.msg_num=#{value}
+	</select>
+
+	<!-- 아이디로 받은 쪽지리스트 검색 -->
+	<select id="msgListByReceiverId" parameterType="String" resultMap="MsgResultMap">
+	select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+	r.msg_status 
+	from MSG m, MSG_RECEIVER r
+	where m.msg_num=r.msg_num and m.user_id_receiver=#{value}
+	order by m.msg_date desc
+	</select>
+	
+	<!-- 아이디로 메시지 계속 체크 -->
+	<select id="Msg.msgChk" parameterType="String" resultMap="MsgResultMap">
+	select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+	r.msg_status 
+	from MSG m, MSG_RECEIVER r
+	where m.msg_num=r.msg_num 
+	and m.user_id_receiver=#{value}
+	and r.msg_status = 1
+	</select>
+	
+	<!-- 아이디로 보낸 쪽지리스트 검색 -->
+	<select id="msgListBySenderId" parameterType="String" resultMap="MsgResultMap">
+	select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+		   s.msg_status 
+	from MSG m, MSG_SENDER s
+	where m.msg_num=s.msg_num and m.user_id_sender=#{value}
+	order by m.msg_date desc
+	</select>
+
+	<!-- 받은쪽지 확인 후 상태변경 -->
+	<update id="msgReceiverStatusUpdate" parameterType="int">
+	update MSG_RECEIVER
+	set msg_status = 2
+	where msg_num = #{value}
+	</update>
+	
+	<!-- 보낸쪽지 확인 후 상태변경 -->
+	<update id="msgSenderStatusUpdate" parameterType="int">
+	update MSG_SENDER
+	set msg_status = 2
+	where msg_num = #{value}
+	</update>
+	
+	<!-- 받은쪽지 삭제 -->
+	<delete id="msgReceiverDeleteByNum" parameterType="int">
+	delete from MSG_RECEIVER where msg_num=#{value}
+	</delete>
+	
+	<!-- 보낸쪽지 삭제 -->
+	<delete id="msgSenderDeleteByNum" parameterType="int">
+	delete from MSG_SENDER where msg_num=#{value}
+	</delete>
+	
+	<!-- 받은쪽지함 페이징 -->
+	<select id="ReceiveMsgCount" parameterType="String" resultType="int">
+	    select count(*) from MSG_RECEIVER where user_id_receiver=#{value}
+	</select>
+	
+	<!-- 보낸쪽지함 페이징 -->
+	<select id="SendMsgCount" parameterType="String" resultType="int">
+	    select count(*) from MSG_SENDER where user_id_sender=#{value}
+	</select>
+	
+	<!-- 받은쪽지함 리스트 + 페이징 -->
+	<select id="selectReceiveMsgWithPage" parameterType="map" resultMap="MsgResultMap">
+		select b.* 
+		from(select a.*, rownum rnum 
+			from(select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+				 r.msg_status 
+			 	 from MSG m, MSG_RECEIVER r
+				 where m.msg_num=r.msg_num and m.user_id_receiver=#{user_id}
+				 order by m.msg_date desc)a)b 
+		where b.rnum between #{start_num} and #{end_num}
+	</select>
+	
+	<!-- 보낸쪽지함 리스트 + 페이징 -->
+	<select id="selectSendMsgWithPage" parameterType="map" resultMap="MsgResultMap">
+		select b.* 
+		from(select a.*, rownum rnum 
+			from(select m.msg_num, m.msg_content, m.msg_date, m.user_id_sender, m.user_id_receiver, 
+				 s.msg_status 
+			 	 from MSG m, MSG_SENDER s
+				 where m.msg_num=s.msg_num and m.user_id_sender=#{user_id}
+				 order by m.msg_date desc)a)b 
+		where b.rnum between #{start_num} and #{end_num}
+	</select>
+</mapper>

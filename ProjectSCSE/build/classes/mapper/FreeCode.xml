@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FreeCode">
+
+	<resultMap type="FreeCode" id="FreeCodeResultMap">
+		<id column="code_num" property="codeNum" />
+		<result column="code_name" property="codeName" />
+		<result column="codeDate" property="codeDate" />
+		<result column="code_hit" property="codeHit" />
+		<result column="code_like" property="codeLike" />
+		<result column="userId" property="userId" />
+		<result column="result_img" property="resultImg" />
+		<result column="left" property="left"/>
+		<result column="right" property="right"/>
+		<result column="up" property="up"/>
+		<result column="down" property="down"/>
+		<result column="speed" property="speed"/>
+		<result column="background_selection" property="backgroundSelection"/>
+		<result column="enemy_selection" property="enemySelection"/>
+		<result column="hard_life" property="hardLife"/>
+		<result column="hard_speed" property="hardSpeed"/>
+		<result column="hard_enemy" property="hardEnemy"/>
+		<result column="normal_life" property="normalLife"/>
+		<result column="normal_speed" property="normalSpeed"/>
+		<result column="normal_enemy" property="normalEnemy"/>
+		<result column="easy_life" property="easyLife"/>
+		<result column="easy_speed" property="easySpeed"/>
+		<result column="easy_enemy" property="easyEnemy"/>
+		<result column="combo_constraint" property="comboConstraint"/>
+		<result column="combo_bonus" property="comboBonus"/>
+		<result column="ending_point" property="endingPoint"/>
+	</resultMap>
+
+	<insert id="insertFreeCode" parameterType="FreeCode">
+		insert into FREECODE values(code_seq.nextval, #{codeName},
+		sysdate,0,0,#{userId},#{resultImg}, #{left}, #{right}, #{up}, #{down}, #{speed}, #{backgroundSelection}, #{enemySelection}, #{easyLife}, #{easySpeed}, #{easyEnemy}, #{normalEnemy}, #{normalLife}, #{normalSpeed}, #{hardEnemy}, #{hardLife}, #{hardSpeed}, #{comboConstraint}, #{comboBonus}, #{endingPoint})
+	</insert>
+
+	<delete id="deleteFreeCode" parameterType="int">
+		delete from FREECODE where code_num=#{value}
+	</delete>
+
+	<update id="updateFreeCode" parameterType="FreeCode">
+		update FREECODE
+		set code_name=#{codeName},
+			code_date=sysdate,
+			result_img=#{resultImg},
+			left=#{left},
+			right=#{right},
+			up=#{up},
+			down=#{down},
+			speed=#{speed},
+			background_selection=#{backgroundSelection},
+			enemy_selection=#{enemySelection},
+			hard_life=#{hardLife},
+			hard_speed=#{hardSpeed},
+			hard_enemy=#{hardEnemy},
+			normal_life=#{normalLife},
+			normal_speed=#{normalSpeed},
+			normal_enemy=#{normalEnemy},
+			easy_life=#{easyLife},
+			easy_speed=#{easySpeed},
+			easy_enemy=#{easyEnemy},
+			combo_constraint=#{comboConstraint},
+			combo_bonus=#{comboBonus},
+			ending_point=#{endingPoint}
+		where code_num=#{codeNum}
+	</update>
+
+	<!-- 코드 상세보기 -->
+	<select id="selectFreeCodeByUserIdAndCodeNum" parameterType="hashmap"
+		resultMap="FreeCodeResultMap">
+		select code_num, code_name, to_char(code_date,'YYYY.MM.DD') as codeDate,
+		code_hit, code_like, userId, result_img, left, right, up, down, speed, background_selection,
+		enemy_selection, easy_life, easy_speed, easy_enemy, normal_life, normal_speed, normal_enemy,
+		hard_life, hard_speed, hard_enemy, combo_constraint, combo_bonus, ending_point
+		from FREECODE
+		where userId=#{userId} and code_num=#{codeNum}
+	</select>
+	<update id="updateCodeHit" parameterType="int">
+		update FREECODE
+		set code_hit=code_hit+1
+		where code_num=#{value}
+	</update>
+
+	<!-- 페이징을 위해서 count 세는 것인데 나중에 하는게 좋을 듯 <select id="selectFreeCodeCount" 
+		resultType="int"> select count(*) from FREECODE </select> -->
+	<!-- ★★★★★★★내가 쓴 코드 리스트(자유모드 사이드바에 나오는 표) -->
+	<select id="selectMyFreeCodeList" parameterType="String"
+		resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name,to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, c.result_img, u.sname, u.userId
+		from suser u, freecode c
+		where u.userId=c.userId(+) and u.userId=#{userId}
+	</select>
+
+	<!-- ★★★★★★★분류 기준에 따라(4가지) 최신순 조회, 최다조회, 우리반 친구들, 선생님 추천 -->
+	<select id="selectFreeCodeOrderByDate" resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name,to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname, u.grade,
+		s.school_name, c.result_img, u.userId, c.background_selection
+		from freecode c, suser u, school s
+		where c.userId=u.userId(+) and u.school_num=s.school_num
+		order by c.code_date desc
+	</select>
+
+	<select id="selectFreeCodeOrderByHit" resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name,to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname, u.grade,
+		s.school_name, c.result_img, u.userId, c.background_selection
+		from freecode c, suser u, school s
+		where c.userId=u.userId and u.school_num=s.school_num
+		order by c.code_hit desc
+	</select>
+
+	<select id="selectMyGroupFreeCode" resultMap="FreeCodeJoinResultMap"
+		parameterType="int">
+		select u.sname, c.code_name, to_char(c.code_date,'YYYY.MM.DD')
+		as codeDate, c.result_img, s.school_name, u.userId, c.background_selection
+		from user_group ug, suser u, freecode c, school s
+		where ug.userId=u.userId and c.userId=ug.userId and
+		u.school_num=s.school_num and ug.group_num=#{value}
+	</select>
+	
+	<select id="selectMySchoolFreeCode" resultMap="FreeCodeJoinResultMap"
+		parameterType="int">
+		select u.sname, c.code_name, to_char(c.code_date,'YYYY.MM.DD')
+		as codeDate, c.result_img, s.school_name, s.school_num, u.userId, c.background_selection
+		from user_group ug, suser u, freecode c, school s
+		where ug.userId=u.userId and c.userId=ug.userId and
+		u.school_num=s.school_num and s.school_num=#{value}
+	</select>
+
+	<select id="selectFreeCodeOrderByLike" resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name, to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname,
+		s.school_name, c.result_img, u.userId, c.background_selection
+		from freecode c, suser u, school s
+		where c.userId=u.userId and u.school_num=s.school_num
+		order by c.code_like desc
+	</select>
+
+	<resultMap type="FreeCode" id="FreeCodeJoinResultMap"
+		extends="FreeCodeResultMap">
+		<result property="freeUser.sName" column="sname" />
+		<result property="freeUserSchool.schoolName" column="school_name" />
+		<result property="freeUserSchool.schoolNum" column="school_num" />
+	</resultMap>
+
+	<!-- 선생님 추천하기 추천 버튼 추가 필요 -->
+	<update id="updateCodeLike" parameterType="int">
+		update FREECODE set code_like=code_like+1 where code_num=#{value}
+	</update>
+
+	<!-- 코드이름과 학생이름으로 검색하는 서비스~~ -->
+	<select id="selectFreeCodeByCodeName" parameterType="String"
+		resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name, to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname, u.grade,
+		s.school_name, c.result_img
+		from freecode c, suser u, school s
+		where c.userId=u.userId and u.school_num=s.school_num and code_name
+		like'%'||#{value}||'%'
+	</select>
+
+	<select id="selectFreeCodeBySname" parameterType="String"
+		resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name,to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname, u.grade,
+		s.school_name, c.result_img
+		from freecode c, suser u, school s
+		where c.userId=u.userId and u.school_num=s.school_num and u.sname
+		like'%'||#{value}||'%'
+	</select>
+	
+	<select id="selectFreeCodeBySnameAndCodeName" parameterType="hashmap" resultMap="FreeCodeJoinResultMap">
+		select c.code_num, c.code_name,to_char(c.code_date,'YYYY.MM.DD') as
+		codeDate, c.code_hit, c.code_like, u.sname, u.grade,
+		s.school_name, c.result_img, u.userId, c.background_selection
+		from freecode c, suser u, school s
+		<where>
+			c.userId=u.userId and u.school_num=s.school_num(+)
+			<if test="sName!=null">
+				and u.sname like '%'||#{sName}||'%'
+			</if>
+			<if test="codeName!=null">
+				and c.code_name like '%'||#{codeName}||'%'
+			</if>
+		</where>
+		order by c.code_date desc
+	</select>
+
+</mapper>

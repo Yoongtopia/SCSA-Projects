@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MyCalendar">
+
+	<resultMap type="MyCalendar" id="MyCalendarResultMap">
+		<id column="USER_ID" property="userId"/>
+		<id column="EVENT_ID" property="eventId"/>
+		<result column="CALENDAR_MEMO" property="calendarMemo"/>
+		<result column="CALENDAR_STATUS" property="calendarStatus"/>
+		<result column="CALENDAR_EVENT_DATE" property="calendarEventDate"/>
+	</resultMap>
+	
+	<resultMap type="MyCalendar" id="MyCalendarJoinResultMap" extends="MyCalendarResultMap">
+		<collection property="eventList" resultMap="Event.EventResultMap" />
+	</resultMap>
+
+	<insert id="insertMyCalendar" parameterType="MyCalendar">
+		insert into My_Calendar 
+		values(#{userId},#{eventId},#{calendarMemo},#{calendarStatus},#{calendarEventDate})
+	</insert>
+	
+	<update id="updateMyCalendar"  parameterType="MyCalendar">
+		update My_Calendar
+		set  CALENDAR_MEMO=#{calendarMemo},
+				CALENDAR_STATUS=#{calendarStatus}, 
+				CALENDAR_EVENT_DATE=#{calendarEventDate}
+		where user_Id=#{userId} 
+			and event_Id=#{eventId} 
+	</update>
+	
+	<delete id="deleteMyCalendar" parameterType="hashmap">
+		delete from My_Calendar 
+		where user_Id=#{userId} 
+			and event_Id=#{eventId}
+	</delete>
+	
+	<!-- 아이디와 행사아이디로 달력 찾기(행사정보 포함) -->
+	<select id="selectMyCalendarByUserIdAndEventId" parameterType="map" resultMap="MyCalendarJoinResultMap">
+		select ca.user_id, 
+					ca.event_id, 
+					ca.calendar_memo, 
+					ca.calendar_status, 
+					to_char(ca.calendar_event_date, 'yyyy-mm-dd') as calendar_event_date, 
+					e.event_title, 
+					e.event_address, 
+					to_char(e.event_start_date, 'yyyy/mm/dd') as event_start_date, 
+					to_char(e.event_end_date,'yyyy/mm/dd') as event_end_date, 
+					e.event_avg_star, e.event_thumbnail, 
+					e.event_gu, e.category_num, 
+					e.event_count, 
+					e.event_issue_point
+		from My_Calendar ca, Event e
+		where ca.event_id=e.event_id
+			and ca.user_Id=#{userId}
+			and e.event_id=#{eventId}
+	</select>
+	
+	<select id="selectMyCalendarListByUserId" parameterType="String" resultMap="MyCalendarResultMap">
+		select user_id, 
+					event_id, 
+					calendar_memo, 
+					calendar_status, 
+					to_char(calendar_event_date, 'yyyy-mm-dd') as calendar_event_date
+		from My_Calendar
+		where user_Id=#{userId}
+	</select>
+	
+	<!-- 행사 정보를 포함한 달력 리스트 -->
+	<select id="selectMyCalendarListWithEventByUserId" 
+		parameterType="String" resultMap="MyCalendarJoinResultMap">
+		select ca.user_id, 
+					ca.event_id, 
+					ca.calendar_memo, 
+					ca.calendar_status, 
+					to_char(ca.calendar_event_date, 'yyyy-mm-dd') as calendar_event_date, 
+					e.event_title, 
+					e.event_address, 
+					to_char(e.event_start_date, 'yyyy-mm-dd') as event_start_date, 
+					to_char(e.event_end_date,'yyyy-mm-dd') as event_end_date, 
+					e.event_avg_star, e.event_thumbnail, 
+					e.event_gu, e.category_num, 
+					e.event_count, 
+					e.event_issue_point
+		from My_Calendar ca, Event e
+		where ca.event_id=e.event_id
+			and ca.user_Id=#{userId}
+	</select>
+	
+	<select id="selectMyCalendarListByDate" parameterType="map" resultMap="MyCalendarResultMap">
+		select user_id, 
+					event_id, 
+					calendar_memo, 
+					calendar_status, 
+					to_char(calendar_event_date, 'yyyy-mm-dd') as calendar_event_date
+		from My_Calendar
+		where user_Id=#{userId}
+			and calendar_event_date=#{calendarEventDate}
+	</select>
+	
+	<select id="selectMyCalendarCountByEventId" parameterType="String" resultType="Integer">
+		select count(user_id) from MY_CALENDAR where event_id=#{value}
+	</select>
+
+</mapper>    

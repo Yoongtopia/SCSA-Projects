@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="PushTag">
+
+	<resultMap type="PushTag" id="PushTagResultMap">
+		<id column="push_tag_num" property="push_tag_num"/>
+		<result column="push_num" property="push_num"/>
+		<result column="push_tag" property="push_tag"/>
+	</resultMap>
+	
+</mapper>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Group">
+
+	<!--그룹 추가 by leader -->
+	<insert id="insertNewGroup" parameterType="HashMap">
+		insert into ssgroup
+		values(GROUP_SEQ.nextVal, #{groupName, jdbcType=VARCHAR},
+		<if test="groupType == 's'" >
+		's',
+		</if>
+		<if test="groupType == 'h'">
+		'h',
+		</if>
+		#{userId, jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 유저와 그룹 관계 테이블에 인서트 함으로써 그룹에 유저를 넣는 효과를 가지는 sql -->
+	<insert id="insertStudentToGroup" parameterType="UserGroup">
+		insert into
+		USER_GROUP
+		values(#{userId}, #{groupNum}, #{groupRole})
+	</insert>
+
+	<!-- 그룹 정보 업데이트 -->
+	<update id="UpdateMyGroup" parameterType="HashMap">
+		update ssgroup
+		set
+		group_name = #{groupName}, group_type = #{groupType}
+		where group_num =
+		#{groupNum}
+		and leaderId = #{userId}
+	</update>
+
+	<!-- 그룹 삭제 -->
+	<delete id="deleteMyGroup" parameterType="HashMap">
+		delete from ssgroup
+		where group_num=#{groupNum} and leaderId=#{userId}
+	</delete>
+
+	<!-- 반에서 학생 삭제 -->
+	<delete id="deleteStudentFromGroup" parameterType="String">
+		delete from
+		USER_GROUP
+		where userId=#{value}
+	</delete>
+
+	<!-- 그룹 정보, 학교 정보 출력 -->
+	<select id="listMyGroup" parameterType="String"
+		resultMap="GroupLeaderSchoolJoinResultMap">
+		select
+			g.group_num,
+			g.group_name,
+			g.group_type,
+			s.school_name,
+			s.school_address
+		from ssgroup
+		g, suser u, school s
+		where
+		g.leaderId=u.userid
+		and
+		u.school_num=s.school_num
+		and u.userId=#{userId}
+		order by g.group_name
+	</select>
+	<!-- 내가 들어가있는 그룹정보 보기 -->
+	<select id="allListMyGroup" parameterType="String"
+		resultMap="GroupLeaderSchoolJoinResultMap">
+		select
+			sg.group_num,
+			sg.group_name,
+			sg.group_type,
+			s.school_name,
+			s.school_address
+			from USER_GROUP g, suser u, school s, SSGROUP sg
+			where
+			u.school_num=s.school_num
+			and sg.GROUP_NUM = g.GROUP_NUM
+			and u.userid=g.userId
+			and u.userId=#{value}
+			order by sg.group_name
+	</select>
+
+	<!-- 리더가 자기 그룹의 학생 리스트 보기 -->
+	<select id="listMyStudent" parameterType="String"
+		resultMap="GroupStudentProgressJoinResultMap">
+		select c.userid, c.sname, c.group_name, c.school_name, c.group_num, c.school_num, max(d.chap_num) as chap_num, max(d.quiz_num) as quiz_num from (select b.userid, b.sname, b.group_name, s.school_name, b.group_role, b.leaderid, b.group_num, s.school_num from (select u.userid, u.sname, a.group_name, u.school_num, a.group_role, a.leaderid, a.group_num from (select g.group_name, ug.userid, ug.group_role, g.leaderid, g.group_num from ssgroup g, user_group ug where ug.group_num(+)=g.group_num) a, suser u where u.userid(+)=a.userid) b, school s where b.school_num=s.school_num(+)) c, (select p.userid, m.chap_num, m.quiz_num from   progress p, mission m where  p.chap_num=m.chap_num and p.quiz_num=m.quiz_num and m.mission_index in (select max(m.mission_index) from mission m, progress p where m.chap_num=p.chap_num and m.quiz_num=p.quiz_num  group by p.userid)) d where d.userid(+)=c.userid and c.leaderid=#{userId} group by c.userid, c.sname, c.group_name, c.school_name, c.group_num, c.school_num order by c.group_name
+	</select>
+
+	<!-- 앞의 쿼리문의 값이 null일 때 그룹 명만 출력-->
+	<select id="selectGroupName" parameterType="HashMap">
+		select group_name as groupName
+		from   ssgroup
+		where leaderId=#{userId}
+		      group_num=#{groupNum}
+	</select>
+	
+	<!--  리더가 접속 여부 보기
+	<select id="listMyStudentLogin" parameterType=""
+		resultMap="UserGroupJoinMap">
+		select u.userId,
+			   u.sname,
+			   u.check_connect
+		from   suser u, ssgroup g, user_group ug
+		where  g.group_num=ug.group_num
+		   and ug.userId = u.userId
+		   and ug.group_role='s'
+		   and g.leaderId = #{userId}
+		order by u.check_connect desc
+	</select> -->
+	
+	<!-- 그룹 생성시 그룹 이름으로 중복체크 -->
+	<select id="selectGroupByGroupName" parameterType="String" resultMap="GroupResultMap">
+		select *
+		from SSGROUP
+		where group_name = #{value}
+	</select>
+	
+	<!-- 접속중인 학생 그룹별로 묶어서 사이드바에 뿌리기 -->
+	<select id="listMyStudentLogin" resultMap="UserGroupJoinMap" parameterType="String">
+		select b.userid, b.sname, b.group_name, b.group_num, b.check_connect, s.school_name 
+		from (select a.*, u.check_connect, u.school_num, u.sname 
+		from (select g.group_name, ug.userid, g.leaderid, g.group_num 
+		from ssgroup g, user_group ug where ug.group_num(+)=g.group_num and group_role='s') a, suser u where u.userid=a.userid) b, school s 
+		where s.school_num(+)=b.school_num and leaderid=#{value}
+		order by b.check_connect desc, b.group_num
+	</select>
+
+	<!-- 리더가 접속 여부 보기 -->
+	<!-- <select id="listMyStudentLogin" parameterType="HashMap" resultMap="User.UserResultMap"> 
+		select u.sname, u.check_connect, g.group_name from suser u, ssgroup g, user_group 
+		ug where g.group_num=ug.group_num and ug.userId = u.userId and ug.group_role='s' 
+		and g.leaderId = #{userId} and <if test="groupNum != 12345678"> and g.group_num= 
+		#{groupNum} </if> order by u.check_connect desc </select> -->
+
+	<!-- 해당그룹의 리스트 -->
+	<select id="listinGroup" parameterType="String" resultMap="User.UserResultMap">
+	select u.userId, u.sname, u.final_access, u.check_connect, max(p.chap_num) as chap_num, max(p.quiz_num) as quiz_num, u.school_num, u.ip
+	from suser u, user_group g, progress p 
+	where u.userId = g.userId
+	and p.userId(+) = u.userId
+	and g.group_num = #{value}
+	group by u.userId, u.sname, u.final_access, u.check_connect, u.school_num, u.ip
+	order by check_connect desc
+	</select>
+	
+	
+	
+	
+
+	<resultMap type="Group" id="GroupResultMap">
+		<id column="group_num" property="groupNum" />
+		<result column="group_name" property="groupName" />
+		<result column="group_type" property="groupType" />
+	</resultMap>
+
+	<resultMap type="User" id="UserGroupJoinMap" extends="User.UserResultMap">
+		<result property="userGroup.groupName" column="group_name" />
+		<result property="userGroup.groupNum" column="group_num" />
+	</resultMap>
+
+	<!--그룹과 학교정보를 함께 출력하기 위한 리절트맵 -->
+	<resultMap type="Group" id="GroupLeaderSchoolJoinResultMap" extends="GroupResultMap">
+		<result property="groupSchool.schoolName" column="school_name" />
+		<result property="groupSchool.schoolAddress" column="school_address" />
+
+		<!-- <association property="leaderSchool" resultMap="School.SchoolResultMap"/> 
+			<collection property="groupList" resultMap="GroupResultMap"/> -->
+	</resultMap>
+
+	<!-- 그룹내 학생 리스트를 출력하기 위한 리절트맵 -->
+	<resultMap type="Group" id="GroupStudentProgressJoinResultMap" extends="GroupResultMap">
+		<collection property="studentList" resultMap="User.UserResultMap"/>
+	</resultMap>
+	
+	
+
+</mapper>

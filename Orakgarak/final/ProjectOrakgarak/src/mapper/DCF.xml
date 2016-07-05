@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="DCF">
+
+	
+	<select id="selectAllDCF" resultType="DCF">
+		select * from DCF
+	</select>
+	
+
+	<select id="selectRfByDate" parameterType="Integer" resultMap="DAOResultMap">
+		select rf from RISKFREE where bokdate=#{value}
+	</select>
+	
+	<select id="selectIndustryGrowth" parameterType="String" resultType="Double">
+		select c.growth from category c, DCF d where c.industry_name = d.indname and d.indname=#{value} limit 1;
+	</select>
+	
+	<select id="selectCostOfDebt" parameterType="hashMap" resultType="Double">
+		select kd from DCF where code=#{code} and year=#{year};
+	</select>
+	
+	
+	<!-- resultType으로 주어도 됩니다. -->
+	<select id="selectDCFByCode" parameterType="String" resultMap="DAOResultMap">
+		select * from DCF where code=#{code}
+	</select>
+	
+	
+	
+	
+	 <update id="updateScore" parameterType="hashMap">
+		update DCF set score=#{score} where code=#{code} and year=#{year}
+	</update>
+	
+	
+	
+		
+
+	<!-- 매핑 -->
+	<resultMap type="DCF" id="DAOResultMap">
+		<result column="code" property="code"/>
+		<result column="rev" property="revenue"/>
+		<result column="cogs" property="cogs"/>
+		<result column="sga" property="sga"/>
+		<result column="tax" property="tax"/>
+		<result column="capex" property="capex"/>
+		<result column="year" property="year"/>
+		<result column="code" property="code"/>
+		<result column="name" property="name"/>
+		<result column="outstand" property="outstanding"/>
+		<result column="rf" property="rf"/>
+		<result column="beta" property="beta"/>
+		<result column="bokdate" property="date"/>
+		<result column="kd" property="kd"/>
+		<result column="grow" property="growth"/>
+		<result column="debt" property="debt"/>
+		<result column="asset" property="asset"/>
+		<result column="equity" property="equity"/>
+		<result column="score" property="score"/>
+		<result column="indCode" property="indCode"/>
+		<result column="indName" property="indName"/>
+
+	</resultMap>
+	
+
+	
+
+	
+
+	
+</mapper>

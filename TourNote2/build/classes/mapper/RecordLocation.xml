@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="RecordLocation">
+     <insert id="insertRoute" parameterType="RecordRoute">
+		insert into record_route values (#{recordNum},sysdate,#{recordLatitude},#{recordLongitude})
+	</insert>
+	
+	<select id="selectRouteByNum" parameterType="int" resultType="RecordRoute">
+	    select record_num as recordNum, record_time as recordTime,
+	    		record_latitude as recordLatitude, record_longitude as recordLongitude
+	    from record_route where record_num=#{value} order by record_time
+	</select>
+	
+    <insert id="insertContinental" parameterType="hashmap">
+        insert into continental values (#{continentalName}, #{recordNum})
+    </insert> 
+    
+    <resultMap type="RecordRoute" id="RouteResultMap">
+        <result column="record_latitude" property="recordLatitude"/>
+        <result column="record_longitude" property="recordLongitude"/>
+    </resultMap>
+     
+</mapper>

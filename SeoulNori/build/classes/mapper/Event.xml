@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Event">
+
+	<resultMap type="Event" id="EventResultMap">
+		<id column="event_id" property="eventId"/>
+		<result column="event_title" property="eventTitle"/>
+		<result column="event_address" property="eventAddress"/>
+		<result column="event_start_date" property="eventStartDate"/>
+		<result column="event_end_date" property="eventEndDate"/>
+		<result column="event_avg_star" property="eventAvgStar"/>
+		<result column="event_thumbnail" property="eventThumbnail"/>
+		<result column="event_gu" property="eventGu"/>
+		<result column="category_num" property="categoryNum"/>
+		<result column="event_count" property="eventCount"/>
+		<result column="event_issue_point" property="eventIssuePoint"/>
+	</resultMap>
+	
+	<resultMap type="Event" id="EventWithCountResultMap" extends="EventResultMap">
+		<result column="count" property="count"/>
+	</resultMap>
+
+	<insert id="eventPasing" parameterType="Event">
+		insert into event values(#{eventId},#{eventTitle},#{eventAddress},to_char(to_date(#{eventStartDate}), 'yyyy/mm/dd')
+								,to_char(to_date(#{eventEndDate}), 'yyyy/mm/dd'),#{eventAvgStar}
+								,#{eventThumbnail},#{eventGu},#{categoryNum},#{eventCount},#{eventIssuePoint})
+	</insert>	
+	
+	<update id="updateEventImage" parameterType="Event">
+		update event set event_thumbnail=#{eventThumbnail} where event_id=#{eventId}
+	</update>
+	
+	<update id="updateParsing" parameterType="Event">
+		update event set event_title=#{eventTitle}, event_address=#{eventAddress},
+						 event_start_date=#{eventStartDate}, event_end_date=#{eventEndDate},
+						 event_gu=#{eventGu}, category_num=#{categoryNum}, event_count=#{eventCount}
+						 where event_id=#{eventId}
+	</update>
+	
+	<update id="updateEventIssuePoint" parameterType="Event">
+		update event set event_issue_point=#{eventIssuePoint} where event_id=#{eventId}
+	</update>
+	
+	
+	<update id="updateEventAvgStar" parameterType="map">
+		update event set event_avg_star=#{eventAvgStar} where event_id=#{eventId}
+	</update>
+	
+	<select id="eventDateCheck" parameterType="map" resultMap="EventResultMap">
+		select * from event where event_id=#{eventId} and #{strDate}>=event_start_date and event_end_date>=#{strDate}
+	</select>
+	
+	
+	
+	<select id="selectEventByEventId" parameterType="String" resultMap="EventResultMap">
+		select event_id, event_title, event_address
+			  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+			  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+			  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+		from event
+		where event_id=#{value}
+	</select>
+	
+	<select id="selectEventByEventIdBySysdate" parameterType="String" resultMap="EventResultMap">
+		select event_id, event_title, event_address
+			  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+			  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+			  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+		from event
+		where event_id=#{value} and event_end_date >= sysdate
+		
+	</select>
+	
+	<select id="selectAllEventList" resultMap="EventResultMap">
+		select event_id, event_title, event_address
+			  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+			  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+			  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+		from event
+		where event_end_date >= sysdate and event_start_date >= '13/01/01'
+		order by event_count desc
+	</select>
+	
+	<select id="selectAllEventListAsNoImage" resultMap="EventResultMap">
+		select * 
+		from	(select event_id, event_title, event_address
+					  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+					  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+					  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+				from event
+				where event_end_date >= sysdate) 
+		where event_thumbnail is null or event_thumbnail=''
+	</select>
+	
+	
+	<select id="selectAllEventListOrderByIssue" resultMap="EventResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select event_id, event_title, event_address
+							  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+							  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+							  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+						from event
+						where event_end_date >= sysdate
+						order by event_issue_point desc
+						) c) b 
+		where b.rnum between 1 and 5
+	</select>
+	
+	
+	
+	<select id="selectEventListOrderByEventCount" parameterType="String" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from  
+							<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+						 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+						 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+						 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+						 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+						 	</if>
+						 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+						 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+						 	</if>
+						 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+					
+						</where>				
+						order by event_count desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+
+	</select>	
+	
+	<select id="selectEventListByEventCategoryOrderByIssue" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from  
+			<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+		 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+		 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+		 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+		 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+		 	</if>
+		 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+		 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+		 	</if>
+		 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+		</where>		
+				order by event_issue_point desc
+	</select>
+	
+	<select id="selectEventListByEventCategoryOrderByIssuePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from  
+							<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+						 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+						 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+						 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+						 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+						 	</if>
+						 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+						 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+						 	</if>
+						 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+						</where>		
+								order by event_issue_point desc
+								) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+
+	</select>
+	
+	<select id="selectEventListByEventCategoryOrderByStar" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from  
+			<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+		 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+		 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+		 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+		 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+		 	</if>
+		 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+		 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+		 	</if>
+		 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+		</where>		
+	
+				order by event_avg_star desc
+	</select>
+	
+	<select id="selectEventListByEventCategoryOrderByStarPaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from  
+							<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+						 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+						 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+						 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+						 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+						 	</if>
+						 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+						 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+						 	</if>
+						 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+						</where>		
+				
+								order by event_avg_star desc
+								) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+
+	</select>
+	
+	<select id="selectEventListByEventCategoryOrderByDate" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from  
+			<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+		 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+		 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+		 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+		 	</if>
+		 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+		 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+		 	</if>
+		 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+		 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+		 	</if>
+		 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+		
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+		</where>		
+
+				order by event_end_date
+	</select>
+	
+	<select id="selectEventListByEventCategoryOrderByDatePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from  
+							<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+						 		(select * from event where category_num='A02070100' or category_num='A02070200') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+						 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+						 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+						 	</if>
+						 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+						 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev, 
+						 	</if>
+						 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+						 		(select * from event where category_num='A02080100' or category_num='A02081300') ev,
+						 	</if>
+						 		 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+						
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+						</where>		
+				
+								order by event_end_date
+								) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+
+	</select>
+	
+	
+	<select id="selectEventListByEventGu" parameterType="map" resultMap="EventResultMap">
+		select *
+		from	(select event_id, event_title, event_address
+					  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+					  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+					  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+				from event where event_end_date > sysdate)
+		<where>
+			<choose>
+				<when test="eventGu=='kyu1'">
+					event_gu='K25' or event_gu='K18' or event_gu='K29' or event_gu='K10'
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu2'">
+					event_gu='K6' or event_gu='K9' or event_gu='K1'			
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu3'">
+					event_gu='K30' or event_gu='K5' or event_gu='K20' or event_gu='K26' or event_gu='K19'
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu4'">
+					event_gu='K12' or event_gu='K23' or event_gu='K16' 
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu5'">
+					event_gu='K17' or event_gu='K3' or event_gu='K24' or event_gu='K15' or event_gu='K7' or event_gu='K13' or event_gu='K31' or event_gu='K28' or event_gu='K22'
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu6'">
+					 event_gu='K11' or event_gu='K8' or event_gu='K4' or event_gu='K14' or event_gu like 'I%'
+				</when>
+				<when test="eventGu!=null and eventGu=='kyu7'">
+					 event_gu='K27' or event_gu='K2' or event_gu='K21'
+				</when>
+				<when test="eventGu!=null and eventGu!='kyu1' and eventGu!='kyu2' and eventGu!='kyu3' and eventGu!='kyu4' and eventGu!='kyu5' and eventGu!='kyu6' and eventGu!='kyu7'">
+					event_gu=#{eventGu}
+				</when>
+			</choose>				 		
+		</where> 		
+	</select>
+	
+	
+	<select id="selectEventListByKeywordOrderByIssue" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+			<if test="keyword!=null">
+				and ev.event_title like '%'||#{keyword}||'%'
+			</if>			
+		</where>
+		order by event_issue_point desc
+	</select>
+	
+	<select id="selectEventListByKeywordOrderByIssuePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+							<if test="keyword!=null">
+								and ev.event_title like '%'||#{keyword}||'%'
+							</if>			
+						</where>
+						order by event_issue_point desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+						
+	</select>
+	
+	<select id="selectEventListByKeywordOrderByStar" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+			<if test="keyword!=null">
+				and ev.event_title like '%'||#{keyword}||'%'
+			</if>
+		</where>
+		order by event_avg_star desc
+	</select>
+	
+	<select id="selectEventListByKeywordOrderByStarPaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+							<if test="keyword!=null">
+								and ev.event_title like '%'||#{keyword}||'%'
+							</if>
+						</where>
+						order by event_avg_star desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="selectEventListByKeywordOrderByDate" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>
+			ev.event_end_date >= sysdate
+			and ev.event_id=a.event_id(+)
+			<if test="keyword!=null">
+				and ev.event_title like '%'||#{keyword}||'%'
+			</if>
+		</where>
+		order by event_start_date desc
+	</select>
+	
+	<select id="selectEventListByKeywordOrderByDatePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from event ev,  (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>
+							ev.event_end_date >= sysdate
+							and ev.event_id=a.event_id(+)
+							<if test="keyword!=null">
+								and ev.event_title like '%'||#{keyword}||'%'
+							</if>
+						</where>
+						order by event_start_date desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="getCategoryNumByEventId" parameterType="String" resultType="String">
+		select category_num from event where event_Id=#{value} 
+	</select>
+	
+	<select id="selectEventListByDetailSearchByIssue" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from
+			<if test="categoryCheck=='festival'">
+			  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+			</if>
+			<if test="categoryCheck=='performance'">
+			  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+			</if>
+			<if test="categoryCheck=='exhibition'">
+			   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+			</if>
+			<if test="categoryCheck=='classic'">
+			 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+			</if>
+			<if test="categoryCheck=='ect'">
+			  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+			</if>
+			<if test="categoryCheck==null">
+				event ev,
+			</if>
+			 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>	
+			ev.event_end_date >= sysdate	
+			and ev.event_id=a.event_id(+)	
+			<if test="detailKeyword!=null">
+			 	and ev.event_title like '%'||#{detailKeyword}||'%'
+			</if>
+			<choose>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+					and ev.event_gu like 'S%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+					and ev.event_gu like 'I%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+					and ev.event_gu like 'K%'
+				</when>
+ 				<when test="selectPlace!= null">				
+					and ev.event_gu=#{selectPlace}
+				</when> 
+			</choose>
+			<if test="datepicker!=null">
+				and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+			</if>
+		</where>
+		order by event_issue_point desc
+	</select>
+	
+	<select id="selectEventListByDetailSearchByIssuePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from
+							<if test="categoryCheck=='festival'">
+							  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+							</if>
+							<if test="categoryCheck=='performance'">
+							  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+							</if>
+							<if test="categoryCheck=='exhibition'">
+							   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+							</if>
+							<if test="categoryCheck=='classic'">
+							 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+							</if>
+							<if test="categoryCheck=='ect'">
+							  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+							</if>
+							<if test="categoryCheck==null">
+								event ev,
+							</if>
+							 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>	
+							ev.event_end_date >= sysdate	
+							and ev.event_id=a.event_id(+)	
+							<if test="detailKeyword!=null">
+							 	and ev.event_title like '%'||#{detailKeyword}||'%'
+							</if>
+							<choose>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+									and ev.event_gu like 'S%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+									and ev.event_gu like 'I%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+									and ev.event_gu like 'K%'
+								</when>
+				 				<when test="selectPlace!= null">				
+									and ev.event_gu=#{selectPlace}
+								</when> 
+							</choose>
+							<if test="datepicker!=null">
+								and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+							</if>
+						</where>
+						order by event_issue_point desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="selectEventListByDetailSearchByStar" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from
+			<if test="categoryCheck=='festival'">
+			  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+			</if>
+			<if test="categoryCheck=='performance'">
+			  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+			</if>
+			<if test="categoryCheck=='exhibition'">
+			   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+			</if>
+			<if test="categoryCheck=='classic'">
+			 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+			</if>
+			<if test="categoryCheck=='ect'">
+			  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+			</if>
+			<if test="categoryCheck==null">
+				event ev,
+			</if>
+			 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>	
+			ev.event_end_date >= sysdate	
+			and ev.event_id=a.event_id(+)	
+			<if test="detailKeyword!=null">
+			 	and ev.event_title like '%'||#{detailKeyword}||'%'
+			</if>
+			<choose>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+					and ev.event_gu like 'S%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+					and ev.event_gu like 'I%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+					and ev.event_gu like 'K%'
+				</when>
+ 				<when test="selectPlace!= null">				
+					and ev.event_gu=#{selectPlace}
+				</when> 
+			</choose>
+			<if test="datepicker!=null">
+				and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+			</if>
+		</where>
+		order by event_avg_star desc
+	</select>
+	
+	<select id="selectEventListByDetailSearchByStarPaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from
+							<if test="categoryCheck=='festival'">
+							  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+							</if>
+							<if test="categoryCheck=='performance'">
+							  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+							</if>
+							<if test="categoryCheck=='exhibition'">
+							   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+							</if>
+							<if test="categoryCheck=='classic'">
+							 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+							</if>
+							<if test="categoryCheck=='ect'">
+							  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+							</if>
+							<if test="categoryCheck==null">
+								event ev,
+							</if>
+							 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>	
+							ev.event_end_date >= sysdate	
+							and ev.event_id=a.event_id(+)	
+							<if test="detailKeyword!=null">
+							 	and ev.event_title like '%'||#{detailKeyword}||'%'
+							</if>
+							<choose>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+									and ev.event_gu like 'S%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+									and ev.event_gu like 'I%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+									and ev.event_gu like 'K%'
+								</when>
+				 				<when test="selectPlace!= null">				
+									and ev.event_gu=#{selectPlace}
+								</when> 
+							</choose>
+							<if test="datepicker!=null">
+								and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+							</if>
+						</where>
+						order by event_avg_star desc
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="selectEventListByDetailSearchByDate" parameterType="map" resultMap="EventWithCountResultMap">
+		select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+				ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+				to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+				ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+				ev.event_count as event_count, ev.event_issue_point as event_issue_point
+		from
+			<if test="categoryCheck=='festival'">
+			  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+			</if>
+			<if test="categoryCheck=='performance'">
+			  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+			</if>
+			<if test="categoryCheck=='exhibition'">
+			   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+			</if>
+			<if test="categoryCheck=='classic'">
+			 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+			</if>
+			<if test="categoryCheck=='ect'">
+			  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+			</if>
+			<if test="categoryCheck==null">
+				event ev,
+			</if>
+			 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+		<where>	
+			ev.event_end_date >= sysdate	
+			and ev.event_id=a.event_id(+)	
+			<if test="detailKeyword!=null">
+			 	and ev.event_title like '%'||#{detailKeyword}||'%'
+			</if>
+			<choose>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+					and ev.event_gu like 'S%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+					and ev.event_gu like 'I%'
+				</when>
+ 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+					and ev.event_gu like 'K%'
+				</when>
+ 				<when test="selectPlace!= null">				
+					and ev.event_gu=#{selectPlace}
+				</when> 
+			</choose>
+			<if test="datepicker!=null">
+				and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+			</if>
+		</where>
+		order by event_end_date
+	</select>
+	
+	<select id="selectEventListByDetailSearchByDatePaging" parameterType="map" resultMap="EventWithCountResultMap">
+		select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (select	ev.event_id as event_id, a.count as count, ev.event_title as event_title, 
+								ev.event_address as event_address, to_char(ev.event_start_date, 'yy/mm/dd') as event_start_date, 
+								to_char(ev.event_end_date, 'yy/mm/dd') as event_end_date, ev.event_avg_star as event_avg_star,
+								ev.event_thumbnail as event_thumbnail, ev.event_gu as event_gu, ev.category_num as category_num, 
+								ev.event_count as event_count, ev.event_issue_point as event_issue_point
+						from
+							<if test="categoryCheck=='festival'">
+							  (select * from event where category_num='A02070100' or category_num='A02070200') ev,
+							</if>
+							<if test="categoryCheck=='performance'">
+							  (select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000') ev,
+							</if>
+							<if test="categoryCheck=='exhibition'">
+							   (select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700') ev,
+							</if>
+							<if test="categoryCheck=='classic'">
+							 (select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') ev,
+							</if>
+							<if test="categoryCheck=='ect'">
+							  (select * from event where category_num='A02080100' or category_num='A02081300') ev,
+							</if>
+							<if test="categoryCheck==null">
+								event ev,
+							</if>
+							 (select e.event_id, count(mc.user_id) as count from event e, my_calendar mc where e.event_id=mc.event_Id(+) group by e.event_id) a
+						<where>	
+							ev.event_end_date >= sysdate	
+							and ev.event_id=a.event_id(+)	
+							<if test="detailKeyword!=null">
+							 	and ev.event_title like '%'||#{detailKeyword}||'%'
+							</if>
+							<choose>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('sou')">
+									and ev.event_gu like 'S%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('inc')">
+									and ev.event_gu like 'I%'
+								</when>
+				 				<when test="selectPlace!= null and selectPlace.trim().equals('kyo')">
+									and ev.event_gu like 'K%'
+								</when>
+				 				<when test="selectPlace!= null">				
+									and ev.event_gu=#{selectPlace}
+								</when> 
+							</choose>
+							<if test="datepicker!=null">
+								and #{datepicker} >= ev.event_start_date and ev.event_end_date >= #{datepicker}    
+							</if>
+						</where>
+						order by event_end_date
+						) c) b 
+		where b.rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="selectEventListByCalendarDate" parameterType="map" resultMap="EventResultMap">
+		select *
+		from	(select	event_id, event_title, event_address
+					  , to_char(event_start_date, 'yy/mm/dd') as event_start_date
+					  , to_char(event_end_date, 'yy/mm/dd') as event_end_date
+					  , event_avg_star, event_thumbnail, event_gu, category_num, event_count, event_issue_point 
+				from	event
+				where	event_end_date >= sysdate
+						and #{calendarDate} >= event_start_date and event_end_date >= #{calendarDate})
+		<where>
+			<choose>
+				<when test="category!=null and category=='festival'">
+					category_num='A02070100' or category_num='A02070200'
+				</when>
+				<when test="category!=null and category=='performance'">
+					category_num='A02080200' or category_num='A02080300' or category_num='A02081000'
+				</when>
+				<when test="category!=null and category=='classic'">
+					category_num='A02080900' or category_num='A02080400' or category_num='A02080800'
+				</when>
+				<when test="category!=null and category=='exhibition'">
+					category_num='A02080500' or category_num='A02080600' or category_num='A02080700'
+				</when>
+				<when test="category!=null and category=='ect'">
+					category_num='A02080100' or category_num='A02081300'
+				</when>
+			</choose>		
+		</where>		
+		order by event_end_date
+	</select>
+	
+	
+	
+	
+	<select id="selectPageCount" parameterType="map" resultType="int"> 
+		select count(*) from
+			<if test="categoryNum=='A02070100'||categoryNum=='A02070200'">
+		 		(select * from event where category_num='A02070100' or category_num='A02070200')
+		 	</if>
+		 	<if test="categoryNum=='A02080200'||categoryNum=='A02080300'||categoryNum=='A02081000'">
+		 		(select * from event where category_num='A02080200' or category_num='A02080300' or category_num='A02081000')
+		 	</if>
+		 	<if test="categoryNum=='A02080500'|categoryNum=='A02080600'||categoryNum=='A02080700'">
+		 		(select * from event where category_num='A02080500' or category_num='A02080600' or category_num='A02080700')
+		 	</if>
+		 	<if test="categoryNum=='A02080900'||categoryNum=='A02080400'||categoryNum=='A02080800'">
+		 		(select * from event where category_num='A02080900' or category_num='A02080400' or category_num='A02080800') 
+		 	</if>
+		 	<if test="categoryNum=='A02080100'||categoryNum=='A02081300'">
+		 		(select * from event where category_num='A02080100' or category_num='A02081300')
+		 	</if>
+	</select>
+	
+	<select id="selectEventTitleByEventIssuePoint" resultType="String">
+	select b.event_title 
+		from  (select c.event_title as event_title, rownum rnum 
+			   from   (select event_title
+				    from event
+				    where event_end_date >= sysdate
+				    order by event_issue_point desc
+						) c) b 
+		      where b.rnum between 1 and 5
+	</select>
+	
+	
+	
+</mapper>    

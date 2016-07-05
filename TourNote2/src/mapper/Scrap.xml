@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Scrap">
+	<insert id="insertScrap" parameterType="hashmap">
+		insert into SCRAP
+		values (#{memberId}, #{recordNum})		
+	</insert>
+	
+	<select id="selectScrap" parameterType="String" resultMap="TravelRecordMap">
+	select *
+	from travel_record t, scrap s
+	where t.record_num = s.record_num and
+	s.member_id=#{memberId}
+	</select>
+
+	<delete id="deleteScrap" parameterType="hashmap">
+		delete from SCRAP where member_id=#{memberId} and record_num=#{recordNum}
+	</delete>	
+	
+	<select id="selectRecommend" parameterType="hashmap" resultType="String">
+		select member_id from RECOMMEND
+		where member_id=#{memberId} and record_num=#{recordNum}
+	</select>
+	
+	<insert id="insertRecommend" parameterType="hashmap">
+		insert into RECOMMEND
+		values (#{memberId}, #{recordNum})		
+	</insert>
+    	
+	<update id="increaseRecommend" parameterType="int">
+		update TRAVEL_RECORD
+		set recommend = recommend+1
+		where record_num=#{recordNum}
+	</update> 
+  
+  	<resultMap type="TravelRecord" id="TravelRecordMap">
+			<id column="record_num" property="recordNum"/>
+			<result column="member_id" property="recordWriter"/>
+			<result column="record_title" property="recordTitle"/>
+			<result column="record_cont" property="recordCont"/>
+			<result column="record_start_time" property="recordStartTime"/>
+			<result column="record_hit" property="recordHit"/>
+			<result column="recommend" property="recommend"/>
+	</resultMap>
+
+
+</mapper>

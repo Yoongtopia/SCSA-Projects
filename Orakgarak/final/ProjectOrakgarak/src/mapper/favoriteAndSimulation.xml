@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="favoriteAndSimulation">
+
+<insert id="insertFavorite" parameterType="hashMap">
+	insert into FAVORITE(userId, codeForFav) values(#{userId},#{codeForFav})
+</insert>
+
+<delete id="deleteFavorite" parameterType="hashMap">
+	delete from FAVORITE where userId=#{userId} and codeForFav=#{codeForFav}
+</delete>
+
+<select id="checkDuplicateFavorite" parameterType="hashMap" resultType="String">
+	select userId from FAVORITE where userId=#{userId} and codeForFav=#{codeForFav}
+</select>
+
+<select id="selectFavorite" resultMap="UserAdvancedAndFavoriteMap" parameterType="String"> <!-- userId를 넣으면 바로 리스트타입으로 반환하게 만든다 -->
+	select f.userId, p.stock_code, p.score_dcf, p.score_multiple, p.score_trend, p.score_risk,
+	p.score_bigdata, p.score_sum, p.stock_name, p.save_date 
+	from FAVORITE f, pentagon p 
+	where f.userId=#{value}
+	and f.codeForFav = p.stock_code
+</select>
+
+<insert id="insertSimulation" parameterType="SimulatedStock">
+	insert into simulation (userId, code, name, oldPrice, oldVolume, date) values (#{userId}, #{code}, #{name}, #{oldPrice}, #{oldVolume}, sysdate());
+</insert>
+
+<delete id="deleteSimulation" parameterType="HashMap">
+	delete from simulation where tradeSeq=#{tradeSeq} and userId=#{userId} and code=#{code}
+</delete>
+
+<select id="selectSimulation" resultMap="UserAdvancedAndSimulatedStockMap" parameterType="String">
+select a.userId, a.originalAsset, a.evaluatedAsset, a.remainCash, s.tradeSeq, s.userId, s.code, s.name, s.oldPrice, s.oldVolume, s.date, s.tradeSeq 
+from userAdvanced a  
+left outer join simulation s
+on a.userId = s.userId
+where a.userId=#{value}
+</select>
+
+<select id="selectVolume" resultType="Integer" parameterType="Integer">
+select oldVolume from simulation where tradeSeq=#{value}
+</select>
+
+<select id="selectOldPrice" resultType="Integer" parameterType="Integer">
+select oldPrice from simulation where tradeSeq=#{value}
+</select>
+
+<insert id="insertUserAdvanced" parameterType="hashMap">
+	insert into userAdvanced (userId, originalAsset, evaluatedAsset, remainCash) values(#{userId}, #{originalAsset},#{evaluatedAsset}, #{remainCash})
+</insert>
+
+<!-- 해당하는 dao는 DB에서 남은 자산과 평가자산만 업데이트합니다. 나머지는 다르게 갑니다. -->
+<update id="updateUserAdvanced" parameterType="hashMap">
+	update userAdvanced set evaluatedAsset=#{evaluatedAsset}, originalAsset = #{originalAsset}, remainCash=#{remainCash} where userId=#{userId}
+</update>
+
+<delete id="deleteUserAdvanced" parameterType="String">
+	delete from userAdvanced where userId=#{userId}
+</delete>
+
+<select id="selectUserAdvanced" parameterType="String" resultType="UserAdvanced">
+	select userId, originalAsset, evaluatedAsset, remainCash from userAdvanced where userId=#{userId}
+</select>
+
+
+
+
+
+<resultMap type="UserAdvanced" id="UserAdvancedMap">
+	<result column="userId" property="userId"/>
+	<result column="originalAsset" property="originalAsset" />
+	<result column="evaluatedAsset" property="evaluatedAsset"/>
+	<result column="remainCash" property="remainCash"/>
+</resultMap>
+
+<resultMap type="UserAdvanced" id="UserAdvancedAndFavoriteMap" extends="UserAdvancedMap">
+	<collection property="favList" resultMap="PentagonResultMap"></collection>
+</resultMap>
+
+<resultMap type="UserAdvanced" id="UserAdvancedAndSimulatedStockMap" extends="UserAdvancedMap">
+	<collection property="simList" resultMap="SimulatedStockMap"></collection>
+</resultMap>
+
+<resultMap type="UserAdvanced" id="UserAllMap" extends="UserAdvancedMap">
+	<collection property="favList" resultMap="PentagonResultMap"></collection>
+	<collection property="simList" resultMap="SimulatedStockMap"></collection>
+</resultMap>
+
+<resultMap type="SimulatedStock" id="SimulatedStockMap">
+	<result column="tradeSeq" property="tradeSeq"/>
+	<result column="userId" property="userId"/>
+	<result column="code" property="code"/>
+	<result column="name" property="name"/>
+	<result column="oldPrice" property="oldPrice"/>
+	<result column="oldVolume" property="oldVolume"/>
+	<result column="date" property="date"/>
+</resultMap>
+
+<!-- favorite을 넣기위해서는 다음과같은 PentagonResultMap이 필요합니다. -->
+<resultMap type="Pentagon" id="PentagonResultMap">
+		<result column="stock_code" property="stockCode"/>
+		<result column="score_dcf" property="scoreDcf"/>
+		<result column="score_multiple" property="scoreMultiple"/>
+		<result column="score_trend" property="scoreTrend"/>
+		<result column="score_risk" property="scoreRisk"/>
+		<result column="score_bigdata" property="scoreBigData"/>
+		<result column="score_sum" property="scoreSum"/>
+		<result column="stock_name" property="stockName"/>
+		<result column="save_date" property="saveDate"/>
+</resultMap>
+
+</mapper>

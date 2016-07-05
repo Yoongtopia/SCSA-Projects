@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Character">
+
+	<select id="selectAllCharacter" resultMap="CharacterResultMap">
+		select * from CHARACTER order by cha_num
+	</select>
+
+	<insert id="insertUserCharacter" parameterType="UserCharacter">
+		insert into USER_CHARACTER values (#{userId},#{chaNum},'N')
+	</insert>
+
+	<!-- 자기가 설정한 캐릭터 찾기 -->
+	<select id="selectUserCharacter" resultMap="CharacterResultMap"
+		parameterType="String">
+		select c.CHA_NUM, c.CHA_NAME, c.CHA_IMG, c.CHA_DESC
+			from USER_CHARACTER u, character c 
+			where u.cha_num = c.cha_num 
+			and u.CHA_CHECKED='Y' 
+			and u.userid=#{value }
+	</select>
+	
+	<!-- 내가 가지고 있는 케릭터 번호와 케릭터 이름 리스트 -->
+	<select id="selectMyCharactersWithChaName" resultMap="UserCharacterCharacterResultMap"
+		parameterType="String">
+		select uc.cha_num, substr(cha_img, 1, instr(c.cha_img, '.', 1)-1) as cha_name
+			from USER_CHARACTER uc, character c 
+			where uc.cha_num = c.cha_num 
+			and uc.userid=#{value}
+	</select>
+	
+	<!-- 자기가 획득하고 있는 캐릭터리스트 -->
+	<select id="myCharacters" resultMap="UserCharacterResultMap" parameterType="String">
+		select * from USER_CHARACTER where userid=#{value}
+	</select>
+
+	<!-- 기존에 캐릭터 선택한거 취소하기 -->
+	<update id="disableCharacter" parameterType="String">
+		update USER_CHARACTER set CHA_CHECKED ='N' where userId = #{value} and CHA_CHECKED ='Y'
+	</update>
+	
+	<!-- 캐릭터 선택하기 -->
+	<update id="updateUserCharacter" parameterType="hashmap">
+		update USER_CHARACTER set cha_checked='Y' where userId=#{userId} and
+		cha_num=#{chaNum}
+	</update>
+
+	<resultMap type="Character" id="CharacterResultMap">
+		<id column="cha_num" property="chaNum" />
+		<result column="cha_name" property="chaName" />
+		<result column="cha_img" property="chaImg" />
+		<result column="cha_desc" property="chaDesc" />
+		<result column="chap_num" property="chapNum" />
+		<result column="quiz_num" property="quizNum" />
+	</resultMap>
+	
+	
+	<resultMap type="UserCharacter" id="UserCharacterResultMap">
+		<id column="userId" property="userId" />
+		<id column="cha_num" property="chaNum" />
+		<result column="cha_checked" property="chaChecked" />
+	</resultMap>
+	
+	<resultMap type="UserCharacter" id="UserCharacterCharacterResultMap" extends="UserCharacterResultMap">
+		<result column="cha_name" property="character.chaName" />
+	</resultMap>
+</mapper>

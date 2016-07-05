@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+  <configuration>
+  	<typeAliases>
+  		<typeAlias type="com.scse.entity.Character" alias="Character"/>
+  		<typeAlias type="com.scse.entity.FreeCode" alias="FreeCode"/>
+  		<typeAlias type="com.scse.entity.Group" alias="Group"/>
+  		<typeAlias type="com.scse.entity.Leader" alias="Leader"/>
+  		<typeAlias type="com.scse.entity.Message" alias="Message"/>
+  		<typeAlias type="com.scse.entity.Mission" alias="Mission"/>
+  		<typeAlias type="com.scse.entity.Notice" alias="Notice"/>
+  		<typeAlias type="com.scse.entity.Progress" alias="Progress"/>
+  		<typeAlias type="com.scse.entity.School" alias="School"/>
+  		<typeAlias type="com.scse.entity.Student" alias="Student"/>
+  		<typeAlias type="com.scse.entity.User" alias="User"/>  		
+  		<typeAlias type="com.scse.entity.UserCharacter" alias="UserCharacter"/>
+  		<typeAlias type="com.scse.entity.UserGroup" alias="UserGroup"/>  		
+  		<typeAlias type="com.scse.entity.Mission5" alias="Mission5"/>  		
+  		<typeAlias type="com.scse.entity.Mission5Progress" alias="Mission5Progress"/>  		
+  	</typeAliases>
+  	
+  	<mappers>
+  		<mapper resource="mapper/Character.xml"/>
+  		<mapper resource="mapper/FreeCode.xml"/>
+  		<mapper resource="mapper/Message.xml"/>
+  		<mapper resource="mapper/Notice.xml"/>
+  		<mapper resource="mapper/School.xml"/>
+  		<mapper resource="mapper/UserGroup.xml"/>
+  		<mapper resource="mapper/Progress.xml"/>
+  		<mapper resource="mapper/Group.xml"/>
+  		<mapper resource="mapper/User.xml"/>
+  	</mappers>
+  </configuration>

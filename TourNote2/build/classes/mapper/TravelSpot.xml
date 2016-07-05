@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ <mapper namespace="TravelSpot">
+ 
+ <!-- 기록 등록 --> 
+  <insert id="insertTravelSpot" parameterType="TravelSpot">
+  insert into TRAVEL_SPOT values (#{spotNum}, #{recordNum}, #{spotTitle}, #{spotCont}, #{spotLatitude}, #{spotLongitude}, sysdate, #{uploadType})
+  </insert> 
+
+ <!-- 사진 등록 -->
+  <insert id="insertPhoto" parameterType="hashMap"> 
+  insert into PHOTO values (#{photoName}, #{spotNum}, #{recordNum}, #{latitude}, #{longitude})
+  </insert>
+  
+ <!-- 기록 삭제 --> 
+ <delete id="deleteTravelSpot" parameterType="TravelSpot">
+  delete from TRAVEL_SPOT where spot_num = #{spotNum} and record_num = #{recordNum}
+ </delete>
+ 
+  <!-- 기록 수정 -->
+ <update id="updateTravelSpot" parameterType="TravelSpot">
+ update travel_spot
+ set spot_title=#{spotTitle}, spot_cont=#{spotCont}, spot_latitude=#{spotLatitude}, spot_longitude=#{spotLongitude}
+ where spot_num=#{spotNum} and record_num=#{recordNum}
+ </update>
+ 
+ <!-- 기록 번호 수정 -->
+ <update id="updateSpotNum" parameterType="TravelSpot">
+ update travel_spot
+ set spot_num=spot_num-1
+ where spot_num=#{spotNum} and record_num=#{recordNum}
+ </update>
+  
+ <!-- 사진 삭제 -->  
+  <delete id="deletePhoto" parameterType="Photo">
+  delete from PHOTO where photo_name = #{photoName} and spot_num = #{spotNum} and record_num = #{recordNum}
+  </delete> 
+  
+    <!-- 사진 삭제 : 기록번호,글번호 기준 -->  
+  <delete id="deletePhotoBySpotNumAndRecordNum" parameterType="hashmap">
+  delete from PHOTO where spot_num = #{spotNum} and record_num = #{recordNum}
+  </delete> 
+  
+    <!-- 사진 하나 찾기 -->
+  <select id="selectPhoto" parameterType="hashmap" resultMap="PhotoResultMap">
+  select * from PHOTO 
+  where spot_num = #{spotNum} and record_num = #{recordNum} and photo_name=#{photoName}
+  </select>
+  
+   <!-- 타임라인 페이징 처리 -->
+  <select id="timeLineCount" parameterType="Integer" resultType="Integer">
+  	select count(*) from TRAVEL_SPOT where record_num = #{value}
+  </select>
+  
+   <!-- 타임라인 리스트 불러오기 -->
+  <select id="timeLineList" parameterType="map" resultMap="TravelSpotJoinResultMap">
+  	select ts.spot_num, ts.spot_title, ts.spot_cont, ts.spot_latitude, ts.spot_longitude,
+		 ts.spot_time, ts.upload_type, p.photo_name, p.latitude, p.longitude 
+  		from travel_spot ts left outer join photo p 
+  		on ts.spot_num=p.spot_num and ts.record_num=p.record_num
+  		where ts.record_num = #{recordNum} order by ts.spot_num
+  </select>  
+  
+ <!-- mapping -->
+  <resultMap type="TravelSpot" id="TravelSpotResultMap">
+	  <id column="spot_num" property="spotNum" /> 
+	  <result column="record_num" property="recordNum" />
+	  <result column="spot_title" property="spotTitle" /> 
+	  <result column="spot_cont" property="spotCont" /> 
+	  <result column="spot_latitude" property="spotLatitude" /> 
+	  <result column="spot_longitude" property="spotLongitude" /> 
+	  <result column="spot_time" property="spotTime" />
+	  <result column="upload_type" property="uploadType" />
+  </resultMap>
+  
+  <resultMap type="Photo" id="PhotoResultMap">
+	  <id column="photo_name" property="photoName" />
+	  <result column="latitude" property="latitude" />
+	  <result column="longitude" property="longitude" />
+  </resultMap>
+  
+  <resultMap type="TravelSpot" id="TravelSpotJoinResultMap" extends="TravelSpotResultMap">
+  	<collection property="photoList" resultMap="PhotoResultMap" /> 
+  	<collection property="travelTransportationList" resultMap="TravelTransportation.TravelTransportationJoinResultMap" /> 
+  </resultMap>
+  
+  <!-- 여행기번호 카운트하기 -->
+  <select id="countRecordNum" parameterType="Integer" resultType="Integer">
+  	select max(spot_num) from TRAVEL_SPOT where record_num = #{value} 
+  </select>
+  
+  <!-- 여행기 글번호로 여행기록, 사진, 교통정보 조회 -->
+	<select id="selectSpotListByRecordNum" parameterType="Integer" resultMap="TravelSpotResultMapWithPhotoAndTransportation">
+	select ts.spot_num, ts.record_num, ts.spot_title, ts.spot_cont,
+		 ts.spot_latitude, ts.spot_longitude, ts.spot_time, ts.upload_type,
+		 p.photo_name, p.latitude, p.longitude, 
+		 tt.transportation_order, tt.country_name, 
+		 tt.transportation_name, tt.transportation_type
+	from travel_spot ts
+	left outer join photo p
+		on ts.spot_num=p.spot_num and ts.record_num=p.record_num
+	left outer join travel_transportation tt
+		on ts.spot_num=tt.spot_num and ts.record_num=tt.record_num
+	where ts.record_num=#{value} order by spot_num
+  </select>
+
+	<resultMap type="TravelSpot" id="TravelSpotResultMapWithPhotoAndTransportation" extends="TravelSpotJoinResultMap">
+		<collection property="travelTransportationList" resultMap="TravelTransportation.TravelTransportationResultMap"/>
+	</resultMap>
+	
+	<!-- 여행기 글번호와 기록번호로 여행기록 조회 -->
+	<select id="selectSpot" parameterType="hashmap" resultMap="TravelSpotResultMap">
+	select spot_num, record_num, spot_title, spot_cont, spot_latitude, spot_longitude, spot_time, upload_type
+	from travel_spot
+	where spot_num=#{spotNum} and record_num=#{recordNum}
+	</select>
+	
+	<!-- 여행기 글번호와 기록번호로 사진 목록 조회 -->
+	<select id="selectPhotoBySpotNumAndRecordNum" parameterType="hashmap" resultMap="PhotoResultMap">
+	select photo_name, latitude, longitude from photo
+	where spot_num=#{spotNum} and record_num=#{recordNum}
+	</select>
+	
+	<!-- 위도 경도 있는 사진 목록 조회 -->
+	<select id="selectPhotoWithGps" parameterType="hashmap" resultMap="PhotoResultMap">
+	select photo_name, latitude, longitude from photo
+	where spot_num=#{spotNum} and record_num=#{recordNum} and latitude != 0 and longitude != 0
+	</select>
+
+  
+  </mapper>

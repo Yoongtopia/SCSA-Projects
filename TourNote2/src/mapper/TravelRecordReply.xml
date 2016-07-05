@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="TravelRecordReply">
+	<insert id="insertTravelRecordReply" parameterType="TravelRecordReply">
+		insert into TRAVEL_RECORD_REPLY
+		values (reply_seq.nextval, #{replyWriter}, #{replyCont}, sysdate, #{recordNum})		
+	</insert>
+	
+	<select id="selectTravelRecordReply" parameterType="int" resultMap="TravelRecordReplyResultMap">
+		select 
+			reply_num,
+			reply_writer,
+			reply_cont,
+			to_char(reply_date, 'yy/mm/dd') as reply_date,
+			record_num
+ 			from TRAVEL_RECORD_REPLY where record_num=#{record_num}	
+	</select>    	
+
+	<delete id="deleteTravelRecordReply" parameterType="int">
+		delete from TRAVEL_RECORD_REPLY where reply_num=#{replyNum}
+	</delete>
+
+	
+ <!-- mapping -->
+  <resultMap type="TravelRecordReply" id="TravelRecordReplyResultMap">
+	  <id column="reply_num" property="replyNum" /> 
+	  <result column="reply_writer" property="replyWriter" />	  
+	  <result column="reply_cont" property="replyCont" /> 
+	  <result column="reply_date" property="replyDate" /> 
+	  <result column="record_num" property="recordNum" />
+  </resultMap>
+
+</mapper>

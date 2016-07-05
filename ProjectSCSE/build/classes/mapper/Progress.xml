@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Progress">
+
+	<resultMap type="Mission" id="MissionResultMap">
+		<id column="chap_num" property="chapNum" />
+		<id column="quiz_num" property="quizNum" />
+		<result column="map_img" property="mapImg" />
+		<result column="quiz_desc" property="quizDesc" />
+		<result column="quiz_level" property="quizLevel" />
+		<result column="quiz_type" property="quizType" />
+		<result column="selector_code" property="selectorCode" />
+		<result column="board_code" property="boardCode" />
+		<result column="js_code" property="jsCode" />
+		<result column="js_name" property="jsName" />
+		<result column="css_name" property="cssName" />
+		<result column="map_code" property="mapCode" />
+		<result column="target_code" property="targetCode" />
+		<result column="rps_num" property="rpsNum" />
+		<result column="mission_index" property="missionIndex" />
+		
+	</resultMap>
+
+	<resultMap type="Progress" id="ProgressResultMap">
+		<id column="userId" property="userId" />
+		<id column="chap_num" property="chapNum" />
+		<id column="quiz_num" property="quizNum" />
+		<result column="time" property="time" />
+		<result column="studyDate" property="studyDate" />
+		<result column="try_num" property="tryNum" />
+		<result column="fail_num" property="failNum" />
+	</resultMap>
+	
+	<resultMap type="Mission5" id="Mission5ResultMap">
+		<id column="mission_index" property="missionIndex"/>
+		<result column="chap_num" property="chapNum"/>
+		<result column="quiz_num" property="quizNum"/>
+		<result column="quiz_header" property="quizHeader"/>
+		<result column="selector_code" property="selectorCode"/>
+	</resultMap>
+	
+	<resultMap type="Mission5Progress" id="Mission5ProgressResultMap" extends="Mission5ResultMap">
+		<id column="userid" property="userId"/>
+		<result column="left" property="left"/>
+		<result column="right" property="right"/>
+		<result column="up" property="up"/>
+		<result column="down" property="down"/>
+		<result column="speed" property="speed"/>
+		<result column="background_selection" property="backgroundSelection"/>
+		<result column="enemy_selection" property="enemySelection"/>
+		<result column="hard_life" property="hardLife"/>
+		<result column="hard_speed" property="hardSpeed"/>
+		<result column="hard_enemy" property="hardEnemy"/>
+		<result column="normal_life" property="normalLife"/>
+		<result column="normal_speed" property="normalSpeed"/>
+		<result column="normal_enemy" property="normalEnemy"/>
+		<result column="easy_life" property="easyLife"/>
+		<result column="easy_speed" property="easySpeed"/>
+		<result column="easy_enemy" property="easyEnemy"/>
+		<result column="combo_constraint" property="comboConstraint"/>
+		<result column="combo_bonus" property="comboBonus"/>
+		<result column="ending_point" property="endingPoint"/>
+	</resultMap>
+	
+	<select id="selectMission5" parameterType="hashmap" resultMap="Mission5ProgressResultMap">
+		select m5.*,
+			   m5p.left,
+			   m5p.right,
+			   m5p.up,
+			   m5p.down,
+			   m5p.speed,
+			   m5p.background_selection,
+			   m5p.enemy_selection,
+			   m5p.hard_life,
+			   m5p.hard_speed,
+			   m5p.hard_enemy,
+			   m5p.normal_life,
+			   m5p.normal_speed,
+			   m5p.normal_enemy,
+			   m5p.easy_life,
+			   m5p.easy_speed,
+			   m5p.easy_enemy,
+			   m5p.combo_constraint,
+			   m5p.combo_bonus,
+			   m5p.ending_point
+		from mission5 m5,
+			 mission5_progress m5p
+		where m5.mission_index=m5p.mission_index(+)
+			  and m5p.userid=#{userId}
+			  and m5.mission_index=#{missionIndex}
+	</select>
+	
+	<select id="selectMission50" resultMap="Mission5ProgressResultMap">
+		select m5.*,
+			   m5p.left,
+			   m5p.right,
+			   m5p.up,
+			   m5p.down,
+			   m5p.speed,
+			   m5p.background_selection,
+			   m5p.enemy_selection,
+			   m5p.hard_life,
+			   m5p.hard_speed,
+			   m5p.hard_enemy,
+			   m5p.normal_life,
+			   m5p.normal_speed,
+			   m5p.normal_enemy,
+			   m5p.easy_life,
+			   m5p.easy_speed,
+			   m5p.easy_enemy,
+			   m5p.combo_constraint,
+			   m5p.combo_bonus,
+			   m5p.ending_point
+		from mission5 m5,
+			 mission5_progress m5p
+		where m5.mission_index=m5p.mission_index(+)
+			  and m5.mission_index=50
+	</select>
+	
+	<update id="updateMission5" parameterType="Mission5Progress">
+		update mission5_progress
+		set left=#{left},
+			right=#{right},
+			up=#{up},
+			down=#{down},
+			speed=#{speed},
+			background_selection=#{backgroundSelection},
+			enemy_selection=#{enemySelection},
+			hard_life=#{hardLife},
+			hard_speed=#{hardSpeed},
+			hard_enemy=#{hardEnemy},
+			normal_life=#{normalLife},
+			normal_speed=#{normalSpeed},
+			normal_enemy=#{normalEnemy},
+			easy_life=#{easyLife},
+			easy_speed=#{easySpeed},
+			easy_enemy=#{easyEnemy},
+			combo_constraint=#{comboConstraint},
+			combo_bonus=#{comboBonus},
+			ending_point=#{endingPoint}
+		where mission_index=#{missionIndex}
+			  and userid=#{userId}
+	</update>
+	
+	<insert id="insertMission5Progress" parameterType="Mission5Progress">
+		insert into mission5_progress values(#{userId}, #{missionIndex}, #{left}, #{right}, #{up}, #{down}, #{speed}, #{backgroundSelection}, #{enemySelection}, #{easyLife}, #{easySpeed}, #{easyEnemy}, #{normalLife}, #{normalSpeed}, #{normalEnemy}, #{hardLife}, #{hardSpeed}, #{hardEnemy}, #{comboConstraint}, #{comboBonus}, #{endingPoint})
+	</insert>	
+
+	<select id="selectMissionByUserId" parameterType="String"
+		resultMap="MissionResultMap">
+		select max(chap_num), max(quiz_num)
+		from Progress
+		where userId={value};
+	</select>
+	
+	<select id="selectAllMission" resultMap="MissionResultMap">
+		select * from Mission order by chap_num, quiz_num
+	</select>
+	
+	<select id="selectMissionByMissionIndex" parameterType="int"
+		resultMap="MissionResultMap">
+		select * from MISSION where mission_index=#{value}
+	</select>
+
+	<select id="selectMissionByChapNumAndQuizNum" parameterType="hashmap"
+		resultMap="MissionResultMap">
+		select * from MISSION where chap_num=#{chapNum} and quiz_num=#{quizNum}
+	</select>
+
+	<insert id="insertProgress" parameterType="Progress">
+		insert into PROGRESS
+		values(#{userId},#{chapNum},#{quizNum},#{time},#{studyDate},#{tryNum},#{failNum})
+	</insert>
+
+	<update id="updateTryNumAndTime" parameterType="Progress">
+		update PROGRESS
+		set time=time+#{time}, study_date=sysDate, try_num=try_num+#{tryNum}, fail_num=fail_num+#{failNum}
+		where userId=#{userId} and chap_num=#{chapNum} and quiz_num=#{quizNum}
+	</update>
+
+	<!-- 미션유저정보view(string, int, int) -->
+	<select id="selectProgressByUserIdAndChapNumAndQuizNum"
+		parameterType="hashmap" resultMap="ProgressResultMap">
+		select userId, chap_num, quiz_num, time, to_char(study_date, 'YYYY.MM.DD')
+		as studyDate, try_num
+		from PROGRESS
+		where userId=#{userId} and chap_num=#{chapNum} and quiz_num=#{quizNum}
+	</select>
+	
+	
+ 	<!-- 학생의 최종 진도 view -->
+<!--	<select id="selectMaxMissionIndexOfStudent"	parameterType="String" resultMap="MissionResultMap">
+		select max(m.mission_index) as mission_index,
+			   max(m.chap_num) as chap_num,
+			   max(m.quiz_num) as quiz_num 
+		from mission m, progress p
+		where m.chap_num=p.chap_num
+	and m.quiz_num=p.quiz_num
+	and p.userId=#{value}
+	</select> -->
+	
+	<select id="selectMaxMissionIndexOfStudent"	parameterType="String" resultMap="MissionResultMap">
+		select *
+		from mission
+		where mission_index in (select max(m.mission_index)
+								from mission m, progress p
+								where m.chap_num=p.chap_num
+									and m.quiz_num=p.quiz_num
+									and p.userId=#{value})
+	</select>
+
+
+	<!-- ★★★★★학생 성취도 화면 -->
+
+	<!-- 총 학습시간 -->
+	<select id="selectTotalTime" parameterType="String" resultType="int">
+		select sum(time)
+		from progress
+		where userId=#{value}
+	</select>
+
+
+	<!-- 표(챕터별 문항, 체류시간, 시도횟수, 난이도, 유형분석, 학습일) -->
+	<select id="selectPerformanceTable" parameterType="hashmap"
+		resultMap="ProgressJoinResultMap">
+		select u.sname, u.userId, p.chap_num, p.quiz_num, to_char(p.study_date,
+		'YYYY.MM.DD') as studyDate, p.time, p.try_num, p.fail_num, m.quiz_level,
+		m.quiz_type
+		from progress p, mission m, suser u
+		where p.chap_num(+)=m.chap_num and p.quiz_num(+)=m.quiz_num and
+		p.chap_num=#{chapNum} and 
+		p.userId=u.userId(+) and u.userId=#{userId}
+		order by p.chap_num, p.quiz_num
+	</select>
+
+	<resultMap type="Progress" id="ProgressJoinResultMap" extends="ProgressResultMap">
+		<collection property="progressMission" javaType="Mission" resultMap="MissionResultMap" />
+		<collection property="progressUser" javaType="User" resultMap="User.UserResultMap" />
+	</resultMap>
+
+
+
+	<!-- 차트(시도횟수, 반평균, 학교평균) -->
+	<select id="selectPersonalTryNum" resultType="int" parameterType="hashmap">
+		select try_num from progress where userId=#{userId} and chap_num=#{chapNum}
+		and quiz_num=#{quizNum}
+	</select>
+
+	<select id="selectSchoolTryNum" resultType="int" parameterType="hashmap">
+		select avg(p.try_num)
+		from PROGRESS p, school s, suser u
+		where u.school_num=s.school_num and p.userId=u.userId and
+		s.school_num=#{schoolNum} and chap_num=#{chapNum} and
+		quiz_num=#{quizNum}
+	</select>
+
+	<select id="selectClassTryNum" resultType="int" parameterType="hashmap">
+		select avg(p.try_num)
+		from PROGRESS p, user_group ug, suser u
+		where ug.userId=u.userId and u.userId=p.userId and ug.group_num=#{groupNum}
+		and chap_num=#{chapNum} and quiz_num=#{quizNum}
+	</select>
+
+	<!-- 보충학습이 필요한 문항(시도횟수 5번 이상) -->
+	<select id="selectNeedToStudy" resultMap="ProgressResultMap"
+		parameterType="hashmap">
+		select chap_num, quiz_num
+		from progress
+		where fail_num>=5 and userId=#{userId} and chap_num=#{chapNum}
+	</select>
+
+	<select id="selectTryNum" parameterType="hashmap" resultType="int">
+		select p.try_num
+		from progress p,
+			 mission m
+		where p.chap_num=m.chap_num
+			  and p.quiz_num=m.quiz_num
+			  and p.userid=#{userId}
+			  and m.mission_index=#{missionIndex}
+	</select>
+	
+	<select id="selectTodayClear" parameterType="String" resultType="int">
+		select count(*)
+		from progress p,
+			 mission m
+		where p.chap_num=m.chap_num
+			  and p.quiz_num=m.quiz_num
+			  and p.userid=#{value}
+			  and p.study_date between trunc(sysdate) and trunc(sysdate)+1
+	</select>
+	
+	<select id="selectFailNum" parameterType="hashmap" resultType="int">
+		select fail_num
+		from progress p,
+			 mission m
+		where p.chap_num=m.chap_num
+			  and p.quiz_num=m.quiz_num
+			  and p.userid=#{userId}
+			  and m.mission_index=#{missionIndex}
+	</select>
+	
+	<select id="selectTotalTryNum" parameterType="String" resultType="int">
+		select sum(p.try_num)
+		from progress p,
+			 mission m
+		where p.chap_num=m.chap_num
+			  and p.quiz_num=m.quiz_num
+			  and p.userid=#{userId}
+	</select>
+
+</mapper>

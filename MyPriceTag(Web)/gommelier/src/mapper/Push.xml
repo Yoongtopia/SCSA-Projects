@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Push">
+
+	<resultMap type="Push" id="PushResultMap">
+		<id column="push_num" property="push_num"/>
+		<result column="user_id" property="user_id"/>
+		<result column="push_price" property="push_price"/>
+		<result column="push_status" property="push_status"/>
+		<result column="push_square" property="push_square"/>
+		<result column="reg_id" property="reg_id"/>
+		<result column="push_check" property="push_check"/>
+		<result column="product_num" property="product_num"/>
+	</resultMap>
+	
+	<resultMap type="Push" id="PushJoinResultMap" extends="PushResultMap">
+		<collection property="pushTagList" resultMap="PushTag.PushTagResultMap"></collection>
+	</resultMap>
+	
+	<!-- 푸쉬등록 -->
+	<insert id="pushInsert" parameterType="map">
+		insert all
+		into PUSH values(PUSH_seq.nextval, #{user_id}, #{push_price}, 1, 1, 0)
+		into PUSH_SQUARE values(PUSH_seq.nextval, #{push_square})
+		<foreach collection="pushTagList" item="item" index="index">
+			into PUSH_TAG values(PUSH_seq.nextval, PUSH_TAG_SEQ.nextval+#{index}, #{item.push_tag})
+		</foreach>
+		select * from dual
+	</insert>
+	
+	<!-- 아이디로 푸쉬리스트 찾기 -->
+	<select id="pushListById" parameterType="String" resultMap="PushJoinResultMap">
+		select p.user_id, p.push_num, s.push_square, p.push_price, p.push_status, p.push_check, p.product_num, t.push_tag, t.push_tag_num
+		from PUSH p, PUSH_SQUARE s, PUSH_TAG t
+		where p.push_num=s.push_num and p.push_num=t.push_num and p.user_id=#{value}
+	</select>
+	
+	<!-- 푸쉬번호로 푸쉬찾기 -->
+	<select id="pushDetailByNum" parameterType="int" resultMap="PushJoinResultMap">
+		select p.user_id, p.push_num, s.push_square, p.push_price, p.push_status, t.push_tag
+		from PUSH p, PUSH_SQUARE s, PUSH_TAG t
+		where p.push_num=s.push_num and p.push_num=t.push_num and p.push_num=#{value}
+	</select>
+	
+	<!-- 푸쉬번호로 PUSH수정 -->
+	<update id="pushUpdateByNum" parameterType="map">
+		update PUSH
+		set push_price=#{push_price}
+		where push_num=#{push_num}
+	</update>
+	
+	<!-- 푸쉬번호로 PUSH_SQUARE 수정 -->
+	<update id="pushSquareUpdateByNum" parameterType="map">
+		update PUSH_SQUARE
+		set push_square=#{push_square}
+		where push_num=#{push_num}
+	</update>
+	
+	<!-- 해당 푸쉬 번호에 푸쉬 태그 등록 -->
+	<update id="pushTagInsertByNum" parameterType="map">
+		insert all
+		<foreach collection="push_tag" item="item" index="index">
+			 into PUSH_TAG values(#{push_num}, push_tag_seq.nextval+#{index}, #{item})
+		</foreach>
+		select * from dual
+	</update>
+	
+	<!-- 푸쉬번호로 푸쉬 태그 삭제 -->
+	<delete id="pushTagDeleteByNum" parameterType="int">
+		delete from PUSH_TAG where push_num = #{value}
+	</delete>
+		
+	<!-- 푸쉬번호로 푸쉬삭제 -->
+	<delete id="pushDeleteByNum" parameterType="int">
+		delete from PUSH where push_num=#{value}
+	</delete>
+	
+	<!-- 푸쉬번호로 푸쉬상태 변경 -->
+	<update id="pushStatusUpdate" parameterType="map">
+		update PUSH 
+		set push_status = #{push_status}
+		where push_num=#{push_num}
+	</update>
+	
+	<select id="pushService" parameterType="map" resultMap="PushResultMap">
+		select distinct p.push_num,  p.user_id, u.reg_id
+		from PUSH p, PUSH_SQUARE s, PUSH_TAG t, USERINFO u
+		where p.push_num=s.push_num
+		and p.user_id=u.user_id
+		and p.push_num=t.push_num
+		and s.push_square = #{product_square}
+		and p.push_price >= #{product_price}
+		and (
+			 <foreach collection="tag" item="item" index="index">
+ 			     <choose>
+ 			         <when test="index==0">
+						t.push_tag = #{item}
+					 </when>
+ 			         <otherwise>
+ 			             or t.push_tag = #{item}
+ 			         </otherwise>
+ 			     </choose>
+ 			  </foreach>
+			)
+			
+<!--  			  <foreach collection="tag" item="item" index="index">
+ 			     <choose>
+ 			         <when test="index==0">
+	            	    p.push_num = (select distinct push_num 
+   			 			from push_tag 
+   			     		where push_tag= #{item})   
+ 			         </when>
+ 			         <otherwise>
+	             		or p.push_num = (select distinct push_num 
+   			 			from push_tag 
+   			     		where push_tag= #{item})
+ 			         </otherwise>
+ 			     </choose>
+ 			  </foreach>
+ 			) -->
+	</select>
+	
+	<update id="pushCheck" parameterType="map">
+	   	update PUSH
+		set push_check = #{push_check}, product_num = #{product_num}
+		where push_num = #{push_num}
+	</update>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    
+    <mapper namespace="Prove">
+    
+	<select id="selectProveByCode" parameterType="String" resultMap="ProveResultMap">
+		select * from prove where code=#{value}
+	</select>
+	
+    
+    <resultMap type="Prove" id="ProveResultMap">
+		<result column="code" property="code"/>
+		<result column="dcf2011" property="dcf2011"/>
+		<result column="dcf2012" property="dcf2012"/>
+		<result column="dcf2013" property="dcf2013"/>
+		<result column="price2012" property="price2012"/>
+		<result column="price2013" property="price2013"/>
+		<result column="price2014" property="price2014"/>
+		<result column="regression" property="regression"/>
+
+
+	</resultMap>
+	
+    
+    
+    </mapper>

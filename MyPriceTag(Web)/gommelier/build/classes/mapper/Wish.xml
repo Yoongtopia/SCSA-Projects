@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Wish">
+
+	<resultMap type="Wish" id="WishResultMap">
+		<id column="user_id" property="user_id"/>
+	</resultMap>
+	
+	<resultMap type="Wish" id="WishJoinResultMap" extends="WishResultMap">
+		<collection property="productList" resultMap="Product.ProductJoinResultMap"></collection>
+	</resultMap>
+	
+	<!-- 아이디로 위시리스트 찾기 -->
+	<select id="wishListById" parameterType="String" resultMap="WishJoinResultMap">
+		select p.product_num as product_num,p.product_price as product_price,p.square_num as square_num,p.product_date as product_date, p.product_status as product_status,p.product_content as product_content,i.img_num as img_num,i.img as img,i.img_main as img_main,t.tag_num as tag_num,t.product_num as tag_product_num,t.tag as tag,w.user_id,w.product_num
+		from WISH w, PRODUCT p, IMG i, Tag t
+		where p.product_num=w.product_num
+		and p.product_num=i.product_num(+)
+		and p.product_num=t.product_num
+		and w.user_id=#{value}
+	</select>
+	
+	<!-- 상품번호로 위시 삭제 -->
+	<delete id="wishDeleteByNum" parameterType="map">
+		delete from WISH 
+		where product_num=#{product_num}
+		and user_id=#{user_id}
+	</delete>
+	
+	<!-- 위시등록 -->
+	<insert id="wishInsert" parameterType="map">
+		insert into WISH values(#{user_id}, #{product_num})
+	</insert>
+	
+	<!-- 위시 유무체크 -->
+	<select id="wishCheck" parameterType="map" resultType="Wish">
+		select   *
+		from     WISH
+		where    user_id=#{user_id}
+		and      product_num=#{product_num}
+	</select>
+	
+	
+</mapper>

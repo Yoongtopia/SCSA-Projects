@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="User">
+  
+  	<insert id="insertUser" parameterType="User">
+  		insert into userinfo values (#{email},#{password},#{name},#{age},#{phone},#{address})
+  	</insert>
+  	
+  	<update id="updateUser" parameterType="User">
+  		update userinfo set password=#{password}, name=#{name}, age=#{age}, phone=#{phone}, address=#{address} where email=#{email}
+  	</update>
+  	
+  	<delete id="deleteUser" parameterType="String">
+  		delete from userinfo where email=#{value}
+  	</delete>
+  	
+  	<select id="selectAllUser" resultType="User">
+  		select * from userinfo
+  	</select>
+  	
+  	<select id="loginUser" resultType="String" parameterType="HashMap">
+  		select name from userinfo where email=#{email} and password=#{password}
+  	</select>
+  	
+  	<select id="selectUserByEmail" resultType="User" parameterType="String">
+  		select * from userinfo where email=#{email}
+  	</select>
+
+  	<select id="selectUserByName" resultType="User" parameterType="String">
+  		select * from userinfo where name=#{name}
+  	</select>
+  	
+  </mapper>

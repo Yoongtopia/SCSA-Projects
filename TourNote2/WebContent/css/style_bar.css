@@ -1,0 +1,24 @@
+/*tab in extractor page*/
+#tabUl{position: absolute;padding-left: 2px; padding-bottom: 0px;border: 0px; border-bottom:1px solid #AAAAAA;}
+
+#tabUl li{width: 185px; float: left; display: inline-block; position: relative;}
+
+#left, #right{
+   height: 32px;
+   width: 25px;
+   cursor: pointer;
+   position: relative;
+   top: 0px;
+   z-index: 999999;    
+}
+
+#left{
+   background: url('images/right.png') no-repeat left 5px;
+   float: right;
+}
+#right{ 
+    background: url('images/left.png') no-repeat left 5px;
+    float: left;
+  }
+#tabUl li{width: 185px; float: left; display: inline-block; position: relative;}
+/*tab in extractor pageends*/

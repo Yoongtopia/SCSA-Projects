@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration 
+
+    xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+    <!-- 
+    Log4j PatternLayout 형식
+   %c : 카테고리를 출력 
+   %p : 로깅 레벨을 출력 
+   %m : 로그 내용 
+   %d : 로깅 이벤트가 발생한 시간, yyyy-MM-dd, HH:mm:ss 등 시간 형식을 사용 
+   %n : 개행 
+     -->
+
+ 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %5p [%c] %m%n" />
+        </layout>   
+    </appender>
+
+     <!-- 
+       RollingFileAppender : 파일에 로그 메시지 기록하고, 파일 크기가 일정 수준 이상이 되면 다른 이  름의 새파일을 생성하고 기록 
+   DailyRollingFileAppender : 파일에 로그 메시지 기록하고, 하루 단위로 로그 파일을 변경해서 기록  --> 
+   <appender name="file" class="org.apache.log4j.DailyRollingFileAppender">
+   		<!-- logs 폴더 없으면 폴더 만들고 생김 -->
+    		<param name="File" value="c:/logs/logfile.log" /> 
+		<param name="DatePattern" value="'.'yy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %5p [%c] %m%n" />
+        </layout>   
+
+    </appender>
+
+ 	<!-- <logger name="Pentagon">
+		<level value="DEBUG"/>
+		<appender-ref ref="console"/>
+		<appender-ref ref="file"/>
+	</logger>
+	
+ 	<logger name="DCF">
+		<level value="DEBUG"/>
+		<appender-ref ref="console"/>
+	</logger> 
+	
+	<logger name="com.orakgarak.controller" >
+		<level value="DEBUG"/>
+		<appender-ref ref="console"/>
+	</logger>  -->
+	 -->
+    
+</log4j:configuration>

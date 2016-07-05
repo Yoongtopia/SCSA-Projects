@@ -1,0 +1,795 @@
+#demoPlayer {
+	position: absolute;
+	z-index: 999;
+	overflow: hidden;
+}
+
+#player {
+	position: absolute;
+	z-index: 999;
+	overflow: inherit;
+}
+
+#playground {
+	position: relative;
+}
+
+#scoreDv {
+	position: absolute;
+	top: 10px;
+}
+
+#lifeDv {
+	position: absolute;
+	top: 10px;
+	right: 0px;
+}
+
+#comboDv {
+	position: absolute;
+	top: 10px;
+	left: 450px;
+}
+
+.obstacle {
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	color: white;
+	font-size: large;
+}
+
+
+.cactus2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/cactus2.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+.fox {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/fox.png");
+	background-size:100%; 
+	background-repeat: no-repeat;
+}
+.fire2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/fire2.png");
+	background-size:100%; 
+	background-repeat: no-repeat;
+}
+.stone {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/stone.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+.house1 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/house1.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+
+.house2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/house2.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+.house3 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/house3.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+.house4{
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/house4.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+}
+/* .present{
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/candy.png");
+	background-size:100%;
+	background-repeat: no-repeat;
+} */
+
+
+#playground {
+	top: 15%;
+	margin-left: 25%;
+	margin-top: 5%;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	margin-bottom: 10px;
+}
+
+.sortable li {
+	margin: 5px;
+	padding: 5px;
+	margin-top:15px;	
+	width: 80px;
+	height: 80px;
+	float: left;
+}
+
+#board {
+	width: 750px;
+	height: 250px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+}
+
+.board {
+	width: 800px;
+	height: 110px;
+	background: #0BC9DD;
+	position: relative;
+}
+
+.boardFree {
+	width: 800px;
+	height: 110px;
+	background: #0BC9DD;
+	position: relative;
+}
+
+#board1 {
+width: 750px;
+	height: 110px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+	z-index: 1;
+}
+
+#board2 {
+	width: 750px;
+	height: 110px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+	z-index: 2;
+}
+
+#board3 {
+	width: 750px;
+	height: 110px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+	z-index: 3;
+}
+
+#board4 {
+	width: 750px;
+	height: 110px;	
+	position: relative;
+	margin-top: 10px;
+	margin-left: 70px;
+	background-image: url("/ProjectSCSE/assets/image/railroad5.png"); 
+	background-repeat: no-repeat;
+	z-index: 4;
+}
+
+#selector {
+	width: 725px;
+	height: 250px;
+	position: relative;
+	border: 5px;
+	margin-top: 20px;
+	margin-left: 10px;
+	padding-left: 50px;
+	padding-top: 25px;
+	margin-right: 0px;
+	margin-bottom: 10px;
+	background-image: url("/ProjectSCSE/assets/image/selector_cloud.png"); 
+	background-repeat: no-repeat;
+	
+}
+
+.items,.programs {
+	width: 80px;
+	height: 80px;
+	background: transparent/* #8DA763 */;
+	margin: 5px;
+	z-index: 99;
+	list-style: none;
+	padding: 0px;
+	position: relative;
+}
+
+.target {
+	width: 75px;
+	height: 75px;
+	
+	position: absolute;
+	z-index: 1;
+}
+
+#trash {
+	width: 50px;
+	height: 50px;
+	position: relative;
+	color: white;
+	background: black;
+}
+
+footer {
+	position: relative;
+}
+
+.enemy {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/ako.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;	
+	height: 75px;	
+	position: absolute;	
+	width: 75px;
+}
+.badako {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/badako.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;	
+	height: 75px;	
+	position: absolute;	
+	width: 75px;
+}
+
+.corner {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/corner.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+.sun {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/sun.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+}
+
+.friend {
+	background-image: url("/ProjectSCSE/assets/image/Character/cookieRun_figure.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;	
+	height: 75px;	
+	position: absolute;
+	color: black;
+	width: 75px;
+}
+
+#tileBox {
+	padding: 0px;
+	width: 920px;
+	overflow: hidden;
+	position: relative;
+}
+
+/* .present {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/candy.png");
+	background-size: 100% 100%; 
+} */
+
+.tile {
+	
+	width: 75px;
+	height: 75px;
+	box-sizing: border-box;
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+	float: left;
+}
+
+.desert {
+background-image: url("/ProjectSCSE/assets/image/Chapter03/sand.png");
+	background-size:100% 100%;
+	background-repeat: no-repeat;
+	}
+
+.road {
+	background-color: #3C1100;
+	border: 1px;
+	border-color: white;
+	border-style: dashed;
+}
+
+.moveRight {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/right.png");
+	background-size: 100% 100%; 
+}
+
+.moveLeft {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/left.png");
+	background-size: 100% 100%; 
+}
+
+.moveBackward {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/backward.png");
+	background-size: 100% 100%; 
+}
+
+.moveForward {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/forward.png");
+	background-size: 100% 100%; 
+}
+
+.startFor4 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor4.png");
+	background-size: 100% 100%; 
+}
+
+.endFor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/endFor.png");
+	background-size: 100% 100%; 
+}
+
+.startFor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor.png");
+	background-size: 100% 100%; 
+}
+
+.startFor5 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor5.png");
+	background-size: 100% 100%; 
+}
+
+.startFor6 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter01/startFor6.png");
+	background-size: 100% 100%; 
+}
+
+.startFor3 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/startFor3.png");
+	background-size: 100% 100%; 
+}
+
+.startFor2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/startFor2.png");
+	background-size: 100% 100%; 
+}
+
+.paint {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/paint.png");
+	background-size: 100% 100%; 
+}
+
+.notPaint {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/notPaint.png");
+	background-size: 100% 100%; 
+}
+
+.fire {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/fire.png");
+	background-size: 100% 100%; 
+}
+
+.present {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/candy.png");
+	background-size: 100% 100%; 
+}
+.gift {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/gift.png");
+	background-size: 100% 100%; 
+}
+
+.ifStrongAcho {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/ifStrongAcho.png");
+	background-size: 100% 100%; 
+		background-repeat: no-repeat;
+}
+
+.ifNormalAcho {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/ifNormalAcho.png");
+	background-size: 100% 100%; 
+}
+
+.plainEndIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/plainEndIf.png");
+	background-size: 100% 100%; 
+}
+
+.ifFriend {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/ifFriend.png");
+	background-size: 100% 100%; 
+}
+
+.startFor8 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/startFor8.png");
+	background-size: 100% 100%; 
+}
+
+.ifPaper {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/ifPaper.png");
+	background-size: 100% 100%; 
+}
+.ifRock {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/ifRock.png");
+	background-size: 100% 100%; 
+}
+.ifScissor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/ifScissor.png");
+	background-size: 100% 100%; 
+}
+.paper {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/paper.png");
+	background-size: 100% 100%; 
+}
+.rock {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/rock.png");
+	background-size: 100% 100%; 
+}
+.rpsEndIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/rpsEndIf.png");
+	background-size: 100% 100%; 
+}
+.scissor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/scissor.png");
+	background-size: 100% 100%; 
+}
+
+.rpsImg {
+	height: 200px;
+	width: 200px;
+	margin: 0 auto;
+}
+
+#achoRockImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/akorockImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#achoPaperImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/akopaperImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#achoScissorImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/akoscissorImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#playerRockImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/rockImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#playerPaperImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/paperImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#playerScissorImg {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/scissorImg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+
+.showMent {
+	display: none;
+	width: 250px;
+	height: 250px;
+}
+
+#scissor {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/scissormsg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#rock {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/rockmsg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#paper {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/papermsg.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+#rcpRing {
+	background-image: url("/ProjectSCSE/assets/image/Chapter02/ring.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+
+#squaredAnswer {
+	position: fixed;
+	top: 440px;
+	right: 100px;
+}
+
+#bullet {
+	position: absolute;
+	width: 75px;
+	height: 75px;
+	background-image: url("/ProjectSCSE/assets/image/Chapter03/bomb.png");
+	background-size: 100%; 
+	
+}
+
+#rpsHeader {
+	height: 60px;
+}
+
+#rpsHeader, #versus {
+	text-align: center;
+}
+
+#rock, #paper, #scissor, #versus {
+	font-size: 3em;
+}
+
+.ifPush {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/ifPush.png");
+	background-size: 100% 100%; 
+}
+
+.userSpeedOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/userSpeedOrder.png");
+	background-size: 100% 100%; 
+}
+
+.userChaOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/userChaOrder.png");
+	background-size: 100% 100%; 
+}
+
+.backOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/backOrder.png");
+	background-size: 100% 100%; 
+}
+
+.enemyChaOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/enemyChaOrder.png");
+	background-size: 100% 100%; 
+}
+
+.enemySpeedOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/enemySpeedOrder.png");
+	background-size: 100% 100%; 
+}
+
+.enemyNumOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/enemyNumOrder.png");
+	background-size: 100% 100%; 
+}
+
+.scoreOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/scoreOrder.png");
+	background-size: 100% 100%; 
+}
+
+.lifeOrder {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/lifeOrder.png");
+	background-size: 100% 100%; 
+}
+
+#directionEndIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/directionEndIf.png");
+	background-size: 100% 100%; 
+}
+
+.startIfCommon {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/startIfCommon.png");
+	background-size: 100% 100%; 
+}
+
+.startIfEasy {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/startIfEasy.png");
+	background-size: 100% 100%; 
+}
+
+.startIfHard {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/startIfHard.png");
+	background-size: 100% 100%; 
+}
+
+.endIfSet {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/endIfSet.png");
+	background-size: 100% 100%; 
+}
+
+#defaultCombo {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/defaultCombo.png");
+	background-size: 100% 100%; 
+}
+
+.elseCollision {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/elseCollision.png");
+	background-size: 100% 100%; 
+}
+
+.gameLoop {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/gameLoop.png");
+	background-size: 100% 100%; 
+}
+
+.ifCollision {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/ifCollision.png");
+	background-size: 100% 100%; 
+}
+
+#increase {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/increase.png");
+	background-size: 100% 100%; 
+}
+
+#makemake {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/makemake.png");
+	background-size: 100% 100%; 
+}
+
+#plusCombo {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/plusCombo.png");
+	background-size: 100% 100%; 
+}
+
+.untilGameEnd {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/untilGameEnd.png");
+	background-size: 100% 100%; 
+}
+
+#minusLife {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/minusLife.png");
+	background-size: 100% 100%; 
+}
+
+#decrease {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/decrease.png");
+	background-size: 100% 100%; 
+}
+
+#gogogogo {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/gogogogo.png");
+	background-size: 100% 100%; 
+}
+
+#keepGoing {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/keepGoing.png");
+	background-size: 100% 100%; 
+}
+
+#comboBonusLi {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/comboBonusLi.png");
+	background-size: 100% 100%; 
+}
+
+#endIfBonusCombo {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/endIfBonusCombo.png");
+	background-size: 100% 100%; 
+}
+
+#ifBonusCombo {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/ifBonusCombo.png");
+	background-size: 100% 100%; 
+}
+
+#ending {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/ending.png");
+	background-size: 100% 100%; 
+}
+
+#endingEndIf {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/endingEndIf.png");
+	background-size: 100% 100%; 
+}
+
+#ifNoLife {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/ifNoLife.png");
+	background-size: 100% 100%; 
+}
+
+#orExceedPoint {
+	background-image: url("/ProjectSCSE/assets/image/Chapter05/orExceedPoint.png");
+	background-size: 100% 100%; 
+}
+
+.line1 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/line1.png");
+	background-size: 100% 100%; 
+}
+
+.line2 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/line2.png");
+	background-size: 100% 100%; 
+}
+
+.line3 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/line3.png");
+	background-size: 100% 100%; 
+}
+
+.line4 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/line4.png");
+	background-size: 100% 100%; 
+}
+
+.line5 {
+	background-image: url("/ProjectSCSE/assets/image/Chapter04/line5.png");
+	background-size: 100% 100%; 
+}
+
+.dodge {
+	position: absolute;
+	bottom: 30px;
+	width: 80px;
+}
+
+.dodgeNumber1 {
+	position: absolute;
+	bottom: 29px;
+	width: 50px;
+	left: 18px;
+}
+
+.dodgeNumber2 {
+	position: absolute;
+	bottom: 23px;
+	width: 50px;
+	left: 18px;
+}
+
+.dodgeNumber3 {
+	position: absolute;
+	bottom: 40px;
+	width: 50px;
+	left: 22px;
+}
+
+.dodgeNumber4 {
+	position: absolute;
+	bottom: 51px;
+	width: 50px;
+	left: 18px;
+}
+
+.dodgeNumber6 {
+	position: absolute;
+	bottom: 40px;
+	width: 50px;
+	left: 13px;
+}
+
+.directionSelect {
+	position: absolute;
+	bottom: 41px;
+	left: 23px;
+}
+
+.locomotive {
+	background-image: url("/ProjectSCSE/assets/image/locomotive.png");
+	background-size: 100% 100%;
+	z-index: 100;
+}
+
+.locomotive:active{
+	background-image: url("/ProjectSCSE/assets/image/locomotiveClick.png");
+	background-size: 100% 100%;
+	z-index: 100;
+}
+
+.trainLink {
+	position: absolute;
+	
+	height: 10px;
+	width: 21px;
+	top: 40px;
+	left: -16px;
+	background-image: url("/ProjectSCSE/assets/image/chain3.png");
+	background-size: 100%;
+}

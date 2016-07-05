@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Qna">
+
+	<resultMap type="Qna" id="QnaResultMap">
+		<id column="EVENT_QNA_NUM" property="eventQnaNum"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="EVENT_ID" property="eventId"/>
+		<result column="EVENT_QNA_REG_DATE" property="eventQnaRegDate"/>
+		<result column="EVENT_QNA_CONTENT" property="eventQnaContent"/>
+	</resultMap>
+
+
+	<insert id="insertQna" parameterType="Qna">
+		insert into EVENT_QNA 
+		values(qna_seq.nextval,#{userId},#{eventId},sysdate,#{eventQnaContent})
+	</insert>
+	
+	<insert id="insertReply" parameterType="Qna">
+		insert into EVENT_QNA 
+		values(#{eventQnaNum}+1,#{userId},#{eventId},sysdate,#{eventQnaContent})
+	</insert>
+	
+	<update id="updateQna"  parameterType="Qna">
+		update EVENT_QNA 
+		set  event_qna_reg_date=sysdate,
+				event_qna_content=#{eventQnaContent}
+		where  event_qna_num=#{eventQnaNum}
+	</update>
+	
+	<delete id="deleteQna" parameterType="Integer">
+		delete from EVENT_QNA  where event_qna_num=#{eventQnaNum}
+	</delete>
+	
+	<select id="selectQnaByEventQnaNum" parameterType="Integer" resultMap="QnaResultMap">
+		select event_qna_num,
+					user_Id,
+					event_id,
+					to_char(event_qna_reg_date,'yyyy/mm/dd') as event_qna_reg_date, 
+					event_qna_content
+		from   EVENT_QNA 
+		where  event_qna_num=#{value}
+	</select>
+	
+	<select id="selectQnaList" resultMap="QnaResultMap">
+		select event_qna_num,
+					user_Id,
+					event_id,
+					to_char(event_qna_reg_date,'yyyy/mm/dd') as event_qna_reg_date, 
+					event_qna_content
+		from   EVENT_QNA
+	</select>
+	
+	<resultMap type="Qna" id="QnaWithMemberResultMap" extends="QnaResultMap">
+		<association property="member" resultMap="Member.MemberResultMap" />
+	</resultMap>
+	
+	<select id="selectQnaListByEventId" parameterType="String" resultMap="QnaWithMemberResultMap">
+		select q.event_qna_num,
+					q.user_id,
+					q.event_id, 
+					to_char(q.event_qna_reg_date,'yyyy/mm/dd hh24:mi') as event_qna_reg_date, 
+					q.event_qna_content,
+					m.nickname, 
+					m.member_type
+		from   EVENT_QNA q, MEMBER m
+		where q.user_id=m.user_id 
+			and event_id=#{value}
+		order by q.event_qna_num
+	</select>
+	
+	<select id="selectManagerIdByEventId" parameterType="String" resultType="String">
+		select user_id 
+		from event_manager 
+		where event_id=#{value}
+	</select>
+
+</mapper>    

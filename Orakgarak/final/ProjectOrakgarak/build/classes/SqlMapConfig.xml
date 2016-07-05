@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+ <configuration>
+ 
+ 	<typeAliases>
+ 		<typeAlias type="com.orakgarak.vo.BigData" alias="BigData"/>
+ 		<typeAlias type="com.orakgarak.vo.Board" alias="Board"/>
+ 		<typeAlias type="com.orakgarak.vo.DCF" alias="DCF"/>
+ 		<typeAlias type="com.orakgarak.vo.Prove" alias="Prove"/>
+ 		<typeAlias type="com.orakgarak.vo.Multiple" alias="Multiple"/>
+ 		<typeAlias type="com.orakgarak.vo.Reply" alias="Reply"/>
+ 		<typeAlias type="com.orakgarak.vo.Risk" alias="Risk"/>
+ 		<typeAlias type="com.orakgarak.vo.Trend" alias="Trend"/>
+ 		<typeAlias type="com.orakgarak.vo.TrendData" alias="TrendData"/>
+ 		<typeAlias type="com.orakgarak.vo.User" alias="User"/> 
+ 		<typeAlias type="com.orakgarak.vo.Pentagon" alias="Pentagon"/>
+ 		<typeAlias type="com.orakgarak.admin.PentagonAdmin" alias="PentagonAdmin"/>
+ 		<typeAlias type="com.orakgarak.vo.BS" alias="BS"/>	
+ 		<typeAlias type="com.orakgarak.vo.IS" alias="IS"/>	
+ 		<typeAlias type="com.orakgarak.vo.CF" alias="CF"/>	
+ 		<typeAlias type="com.orakgarak.vo.Industry" alias="industry"/>
+ 		<typeAlias type="com.orakgarak.vo.SimulatedStock" alias="SimulatedStock" />
+ 		<typeAlias type="com.orakgarak.vo.UserAdvanced" alias="UserAdvanced"/>
+ 		<typeAlias type="com.orakgarak.vo.DCFCalculateData" alias="DCFCalculateData"/>
+ 		<typeAlias type="com.orakgarak.vo.DCFCalculate" alias="DCFCalculate"/>
+ 		
+ 	</typeAliases>
+ 	
+ 	<mappers>
+		<mapper resource="mapper/board.xml"/>
+ 	 	<mapper resource="mapper/DCF.xml"/>
+ 	 	<mapper resource="mapper/multiple.xml"/>
+ 	 	<mapper resource="mapper/reply.xml"/>
+ 		<mapper resource="mapper/user.xml"/>
+ 		<mapper resource="mapper/prove.xml"/>
+ 		<mapper resource="mapper/pentagon.xml"/>
+ 		<mapper resource="mapper/pentagonAdmin.xml"/>
+ 		<mapper resource="mapper/info.xml"/>
+ 		<mapper resource="mapper/risk.xml"/>
+ 		<mapper resource="mapper/bigdata.xml"/>
+ 		<mapper resource="mapper/trend.xml"/>
+ 		<mapper resource="mapper/favoriteAndSimulation.xml"/>
+ 		
+
+ 	</mappers>
+ 
+ </configuration>
+ 
+ 
+ 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+  <configuration>
+  	<typeAliases>
+  		<typeAlias type="com.scsa.vo.Cmt" alias="Cmt"/>
+  		<typeAlias type="com.scsa.vo.Img" alias="Img"/>
+  		<typeAlias type="com.scsa.vo.Key" alias="Key"/>
+  		<typeAlias type="com.scsa.vo.Msg" alias="Msg"/>
+  		<typeAlias type="com.scsa.vo.Notice" alias="Notice"/>
+  		<typeAlias type="com.scsa.vo.Product" alias="Product"/>
+  		<typeAlias type="com.scsa.vo.Push" alias="Push"/>
+  		<typeAlias type="com.scsa.vo.PushTag" alias="PushTag"/>
+  		<typeAlias type="com.scsa.vo.Tag" alias="Tag"/>
+  		<typeAlias type="com.scsa.vo.User" alias="User"/>
+  		<typeAlias type="com.scsa.vo.Wish" alias="Wish"/>
+  		<typeAlias type="com.scsa.vo.Univ" alias="Univ"/>
+  	</typeAliases>
+  	<mappers>
+   		<mapper resource="mapper/Cmt.xml"/>
+  		<mapper resource="mapper/Img.xml"/>
+  		<mapper resource="mapper/Key.xml"/>
+  		<mapper resource="mapper/Msg.xml"/>
+  		<mapper resource="mapper/Notice.xml"/>
+  		<mapper resource="mapper/Product.xml"/>
+  		<mapper resource="mapper/Push.xml"/>
+  		<mapper resource="mapper/PushTag.xml"/>
+  		<mapper resource="mapper/Tag.xml"/>
+  		<mapper resource="mapper/User.xml"/>
+  		<mapper resource="mapper/Wish.xml"/> 
+  		<mapper resource="mapper/Univ.xml"/>
+  	</mappers>
+  </configuration>

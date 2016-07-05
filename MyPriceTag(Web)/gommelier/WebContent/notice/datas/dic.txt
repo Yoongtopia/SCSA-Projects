@@ -1,0 +1,653 @@
+###############################################
+#대분류		소분류		세분류
+#----------------------------------------------
+#(1) 체언	명사 NN		일반명사 NNG
+#						고유명사 NNP
+#						의존명사 NNB
+#			대명사 NP		대명사 NP
+#			수사 NR		수사 NR
+#----------------------------------------------
+#(2) 용언	동사 VV		동사 VV
+#			형용사 VA		형용사 VA
+#			보조용언 VX	보조용언 VX
+#			지정사 VC		긍정지정사 VCP
+#						부정지정사 VCN
+#----------------------------------------------
+#(3) 수식언	관형사 MM	 
+#			부사 MA		일반부사 MAG
+#						접속부사 MAJ
+#----------------------------------------------
+#(4) 독립언	감탄사 IC		감탄사 IC
+#----------------------------------------------
+#(5) 관계언	격조사 JK		주격조사 JKS
+#						보격조사 JKC
+#						관형격조사 JKG
+#						목적격조사 JKO
+#						부사격조사 JKB
+#						호격조사 JKV
+#						인용격조사 JKQ
+#			보조사 JX		보조사 JX
+#			접속조사 JC	접속조사 JC
+#----------------------------------------------
+#(6) 의존형태	어미 E		선어말어미 EP
+#						종결어미 EF
+#						연결어미 EC
+#						명사형전성어미 ETN
+#						관형형전성어미 ETM
+#			접두사 XP		체언접두사 XPN
+#			접미사 XS		명사파생접미사 XSN
+#						동사파생접미사 XSV
+#						형용사파생접미사 XSA
+#			어근 XR		어근 XR
+#----------------------------------------------			
+#(7) 기호	마침표,물음표, 느낌표 		SF
+#			쉼표, 가운뎃점, 콜론, 빗금	SP
+#			따옴표, 괄호표, 줄표 		SS
+#			줄임표	  				SE
+#			붙임표(물결, 숨김, 빠짐)	SO
+#			외국어	  				SL
+#			한자	 					SH
+#			기타 기호(논리 수학기호,
+#			화폐 기호) 등)	  			SW
+#			명사추정범주	  			NF
+#			용언추정범주				NV
+#			숫자	  					SN
+#			분석불능범주	 			NA
+###############################################
+
+아이패드	NNG
+싸이콘서트	NNG
+필하모닉	NNG
+티켓	NNG
+공연	NNG
+직거래	NNG
+우편	NNG
+R석	NNG
+예술의전당	NNG
+상품권	NNG
+던킨	NNG
+빠바	NNG
+파스쿠찌	NNG
+배스킨	NNG
+닥마3홀	NNG
+새것	NNG
+닥터마틴	NNG
+정품	NNG
+회색	NNG
+베네피트	NNG
+BB	NNG
+한번사용	NNG
+베네피트 빅 이지	NNG
+베네피트	NNG
+단델리온	NNG
+새것	NNG
+참치	NNG
+아이폰	NNG
+Football Manager 2014	NNG
+FM 2014	NNG
+정품	NNG
+미개봉	NNG
+EPL	NNG
+라리가	NNG
+문자	NNG
+에스티로더 갈색병	NNG
+정품	NNG
+백화점	NNG
+50ml	NNG
+새상품	NNG
+비오템 옴므 자외선 차단제	NNG
+면세점	NNG
+75ml	NNG
+대용량	NNG
+검정구두	NNG
+240mm	NNG
+4cm	NNG
+민무늬	NNG
+학교	NNG
+쿠쿠	NNG
+10인용	NNG
+전기밥솥	NNG
+후문	NNG
+삼천리자전거	NNG
+저가형	NNG
+남성용	NNG
+기어21단	NNG
+짐받이	NNG
+기어1단	NNG
+여성용	NNG
+바구니	NNG
+하늘색	NNG
+슈퍼맨짐	NNG
+vip회원권	NNG
+양도	NNG
+1개월	NNG
+2개월	NNG
+3개월	NNG
+4개월	NNG
+5개월	NNG
+6개월	NNG
+7개월	NNG
+8개월	NNG
+9개월	NNG
+10개월	NNG
+11개월	NNG
+12개월	NNG
+1년	NNG
+2년	NNG
+3년	NNG
+4년	NNG
+5년	NNG
+6년	NNG
+7년	NNG
+8년	NNG
+9년	NNG
+10년	NNG
+헬스장	NNG
+남산	NNG
+케이블카	NNG
+티켓	NNG
+10%디시	NNG
+직거래	NNG
+세트	NNG
+요가	NNG
+양도	NNG
+외대앞	NNG
+가이아요가	NNG
+16회	NNG
+협의가능	NNG
+정통요가	NNG
+헬스파크	NNG
+양도	NNG
+한달	NNG
+협의가능	NNG
+헬스 이용권	NNG
+돌체구스토	NNG
+미니미	NNG
+8만원	NNG
+새상품	NNG
+커피머신	NNG
+아이패드 에어 로지텍 키보드	NNG
+새것	NNG
+아이패드에어	NNG
+로지텍	NNG
+키보드	NNG
+서울째즈페스티벌	NNG
+2일권	NNG
+우편	NNG
+협의가능	NNG
+침대	NNG
+탁자	NNG
+의자	NNG
+퀸	NNG
+엄태창클래식기타	NNG
+엄태창기타	NNG
+찍힌곳	NNG
+몇군데	NNG
+애플용	NNG
+충전배터리	NNG
+30핀	NNG
+휴대용	NNG
+iwalk800	NNG
+아이폰3	NNG
+아이폰4	NNG
+아이폰4s	NNG
+아이팟 터치	NNG
+1세대	NNG
+2세대	NNG
+클래식	NNG
+나노	NNG
+아이패드	NNG
+계산기	NNG
+카시오	NNG
+fx-350MS	NNG
+쌀집계산기	NNG
+직거래	NNG
+존 메이어	NNG
+내한공연	NNG
+티켓	NNG
+양도	NNG
+스탠딩 R석	NNG
+현대카드	NNG
+바바라	NNG
+플랫슈즈	NNG
+230mm	NNG
+검정	NNG
+에나멜	NNG
+최상	NNG
+바비브라운	NNG
+비비크림	NNG
+light 색상	NNG
+미개봉	NNG
+새제품	NNG
+담배	NNG
+던힐 라이트	NNG
+면세점	NNG
+1보루	NNG
+선글라스	NNG
+칼라커펠트	NNG
+직수입	NNG
+정품	NNG
+품질보증서	NNG
+신세계상품권	NNG
+10만원권	NNG
+직거래	NNG
+학교앞	NNG
+책상의자	NNG
+조절가능	NNG
+높낮이	NNG
+목받이	NNG
+팔걸이	NNG
+바퀴	NNG
+1년 전 구매	NNG
+듀얼백	NNG
+요추의자	NNG
+한달 사용	NNG
+전기밥솥	NNG
+싱글형	NNG
+쿠쿠	NNG
+CR-0322p	NNG
+직거래	NNG
+착불택배	NNG
+아이패드2	NNG
+4개월 사용	NNG
+남영역	NNG
+직거래	NNG
+A급	NNG
+2단 책장	NNG
+흠집없음	NNG
+거의 새거	NNG
+2개	NNG
+전기밥솥	NNG
+3~4인용	NNG
+6개월	NNG
+월디페	NNG
+티켓	NNG
+2장	NNG
+장당 7만원	NNG
+양평	NNG
+실내자전거	NNG
+운동	NNG
+중고	NNG
+노트북	NNG
+가성비	NNG
+Hasee Y401U i7 ssd	NNG
+인텔3세대	NNG
+14인치	NNG
+지포스	NNG
+직거래	NNG
+택배	NNG
+갤럭시탭	NNG
+SHV-E150S	NNG
+7.7LTE	NNG
+가죽케이스	NNG
+젤리케이스	NNG
+충전케이블	NNG
+홍삼정	NNG
+비타민C	NNG
+멀티비타민	NNG
+영양제	NNG
+궁내삼	NNG
+직거래	NNG
+택배	NNG
+궁내삼	NNG
+홍삼원액	NNG
+프리미엄	NNG
+직거래	NNG
+택배	NNG
+갤럭시 노트 8.0	NNG
+갤노트	NNG
+스크래치	NNG
+상태양호	NNG
+직거래	NNG
+기타	NNG
+일렉기타	NNG
+8개월	NNG
+양호	NNG
+흥정가능	NNG
+아이노트	NNG
+inote	NNG
+무선키보드	NNG
+마우스	NNG
+FS-25705KM	NNG
+책상	NNG
+인조가죽의자	NNG
+핑크색	NNG
+직거래	NNG
+아닉구딸	NNG
+명품향수	NNG
+쁘띠뜨쉐리	NNG
+오드뚜왈렛	NNG
+100ml	NNG
+니치향수	NNG
+별그대	NNG
+전지현	NNG
+선물용	NNG
+서랍장	NNG
+책장	NNG
+거울	NNG
+전기포트	NNG
+선풍기	NNG
+아이폰4S	NNG
+보조배터리	NNG
+iwalk 1500	NNG
+epyra EP1500	NNG
+미니5핀	NNG
+직거래	NNG
+택배	NNG
+2인 사각식탁	NNG
+의자	NNG
+나무색깔	NNG
+탄자국	NNG
+슈어	NNG
+이어폰	NNG
+se215	NNG
+실착4회	NNG
+보증서	NNG
+풀박스	NNG
+나이키 에어미션	NNG
+핑크	NNG
+245	NNG
+실착 3회	NNG
+밥솥	NNG
+쿠쿠 6인용	NNG
+전기밥솥	NNG
+주걱	NNG
+계량컵	NNG
+설명서	NNG
+서랍장	NNG
+스탠드	NNG
+3단책장	NNG
+6칸책장	NNG
+4단서랍장	NNG
+화장대거울	NNG
+소파겸침대	NNG
+소파로만사용	NNG
+냉장고	NNG
+한칸	NNG
+냉동칸	NNG
+대한항공기내면세점	NNG
+이용권	NNG
+3만원	NNG
+종이형태	NNG
+공유기	NNG
+wevo	NNG
+남성잡지	NNG
+LEON	NNG
+3월호	NNG
+잡지만	NNG
+직거래	NNG
+헬스	NNG
+핫요가	NNG
+2달권	NNG
+운동복 포함	NNG
+슈퍼맨짐	NNG
+아이패드4	NNG
+생활기스	NNG
+dvis키보드	NNG
+전면보호필름	NNG
+풀박스	NNG
+케이스	NNG
+화이트	NNG
+건조대	NNG
+작은 것	NNG
+새 것	NNG
+선착순	NNG
+이니스프리	NNG
+네온 컬러 팟	NNG
+루즈 3호	NNG
+상큼한 오렌지 맛	NNG
+조금 사용	NNG
+6구 멀티탭	NNG
+파랑색	NNG
+직거래	NNG
+DSLR	NNG
+Cannon EOS 7D	NNG
+중급기	NNG
+바디	NNG
+변태크롭	NNG
+배터리	NNG
+인터넷	NNG
+LGU+	NNG
+와이파이	NNG
+설치비 무료	NNG
+명의 변경	NNG
+행거	NNG
+접이식 행거	NNG
+이동접이식 에티켓 4단 건조대	NNG
+제습기	NNG
+LAD-01	NNG
+박스채	NNG
+미니히터	NNG
+전기	NNG
+hnz-1000mp	NNG
+노란색	NNG
+EBS	NNG
+토목달900	NNG
+환급과정	NNG
+토마토토익	NNG
+1000제	NNG
+LC	NNG
+RC	NNG
+교재	NNG
+새책	NNG
+국제경영책	NNG
+Global Business Today	NNG
+팝니다	NNG
+새책	NNG
+가격	NNG
+영어1교재	NNG
+world of reading2	NNG
+부분 필기	NNG
+가격	NNG
+의사결정분석	NNG
+마케팅원론	NNG
+경영영어	NNG
+시험문제	NNG
+줌달	NNG
+일반화학	NNG
+8판	NNG
+할리데이	NNG
+일반물리	NNG
+9판	NNG
+1권	NNG
+삽니다	NNG
+최신판	NNG
+SS급	NNG
+우동균	NNG
+컴활	NNG
+1급	NNG
+필기책	NNG
+실기책	NNG
+새제품	NNG
+스프링	NNG
+제본	NNG
+깔끔	NNG
+회계원리	NNG
+상법강의(상)	NNG
+답안지포함	NNG
+답안지	NNG
+해설지	NNG
+체크	NNG
+2개월	NNG
+완전히 깨끗	NNG
+새것	NNG
+모델	NNG
+센스	NNG
+NDL1263	NNG
+학교에서 썼던 제품	NNG
+지하철로 약 30분소요	NNG
+전기밥솥	NNG
+DOOWON MAMA DCM-06GR	NNG
+취사와 보온	NNG
+몸통은 파랑	NNG
+뚜껑은 초록	NNG
+손잡이는 노랑색	NNG
+전자레인지	NNG
+인터넷 최저가	NNG
+전기자전거	NNG
+알톤 매그넘24	NNG
+주행거리	NNG
+180.4km	NNG
+앉아서 쓰는 상	NNG
+가로 세로	NNG
+60x40cm	NNG
+인라인 스케이트	NNG
+풀장비	NNG
+거의 새거	NNG
+270~280 착용가능	NNG
+팔만원대	NNG
+LG	NNG
+노트북	NNG
+U560-GH3SK	NNG
+인라인 스케이트	NNG
+사이즈 240	NNG
+수성페인트	NNG
+오렌지색3호	NNG
+개나리색	NNG
+0.9L	NNG
+유광	NNG
+닥터자르트	NNG
+립밤	NNG
+비비	NNG
+핸드크림	NNG
+멀티밤	NNG
+양면 매트리스 포함된 침대	NNG
+체구 작으면 두명 자도 됨	NNG
+완벽히 새것 상태	NNG
+고데기	NNG
+색상은 검정	NNG
+공학용 계산기	NNG
+새것 상태	NNG
+로드입문 자전거	NNG
+본체는 매우 새 것	NNG
+cello XLR1	NNG
+검정색	NNG
+59만원에 구입	NNG
+책상	NNG
+책꽂이도 함께 활용	NNG
+삼성 	NNG
+wb150f??	NNG
+스마트카메라	NNG
+정품	NNG
+개봉도 하지 않음	NNG
+삼성	NNG
+청소기	NNG
+전신거울	NNG
+잘 서있음	NNG
+좌식 의자	NNG
+푹신	NNG
+높낮이 조절	NNG
+그릇	NNG
+프랑스산	NNG
+종류 다양	NNG
+tv받침	NNG
+서랍장	NNG
+책상서랍	NNG
+서랍장	NNG
+아래바퀴	NNG
+책상에서 앉을 수 있는 의자	NNG
+의자	NNG
+편안한 의자	NNG
+듀오백	NNG
+좌식의자	NNG
+듀오백	NNG
+의자	NNG
+등받이	NNG
+목받이	NNG
+원탁	NNG
+의자	NNG
+6단 서랍	NNG
+2단 행거	NNG
+접이식 매트리스	NNG
+책상+의자 세트	NNG
+옷장	NNG
+의자 높이 조절 가능	NNG
+LED 탁상시계	NNG
+하늘색	NNG
+사용한지 2개월	NNG
+입식 화장대	NNG
+거의 새거	NNG
+초록색	NNG
+원목 책상	NNG
+좌식 책상	NNG
+곰인형 의자	NNG
+새 침대	NNG
+매트리스 포함	NNG
+블라인드	NNG
+거울	NNG
+상태는 깨끗	NNG
+아주 무겁지 않음	NNG
+소파베드	NNG
+다리미	NNG
+왕자헹거	NNG
+기본 2단 헹거	NNG
+수납 소쿠리	NNG
+같이 다는 커튼	NNG
+전신거울	NNG
+길쭉한 전신거울	NNG
+세워놓는 것	NNG
+화장대	NNG
+좌식	NNG
+빨간색	NNG
+거울 달려있음	NNG
+서랍에 수납	NNG
+건조대	NNG
+삼성	NNG
+노트북	NNG
+SENS RF410?	NNG
+Intel	NNG
+상태 A급	NNG
+상태 B급	NNG
+생활기스	NNG
+무선 마우스 포함	NNG
+시슬리	NNG
+레인보우 쇼퍼백	NNG
+새제품	NNG
+클러치백	NNG
+블랙	NNG
+전자렌지용 밥솥	NNG
+후라이팬	NNG
+렌지메이트	NNG
+일제 하리오	NNG
+침대	NNG
+책상	NNG
+의자	NNG
+서랍장(5단)	NNG
+밥솥	NNG
+건조대	NNG
+전신거울	NNG
+테이블	NNG
+전자레인지	NNG
+아티브 북9 라이트	NNG
+화이트	NNG
+터치 스크린	NNG
+180도	NNG
+깨진 부분 없다	NNG
+키보드 변색 없다	NNG
+거의 신품	NNG
+사무용 컴퓨터	NNG
+슬림형	NNG
+데스크탑	NNG
+CPU	NNG
+램	NNG
+하드	NNG
+침대	NNG
+책장	NNG
+의자	NNG
+서랍장(4단)	NNG
+박스(60L)	NNG
+전신거울	NNG
+건조대	NNG
+네고 가능	NNG
+전자레인지	NNG
+냉장고	NNG
+기본형	NNG
+세탁기	NNG
+책상	NNG
+책장	NNG
+네고 가능	NNG
+ㄱ자형 오피스 책상	NNG
+스탠드형 책장	NNG
+밝은 나무색	NNG
+이동형 받침대 세트	NNG
+책장 총 4칸	NNG

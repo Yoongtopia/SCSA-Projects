@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+
+<resultMap type="Member" id="MemberResultMap">
+  <id column="USER_ID" property="userId" /> 
+  <result column="NICKNAME" property="nickname" /> 
+  <result column="PASSWORD" property="password" /> 
+  <result column="MEMBER_TYPE" property="memberType" /> 
+  <result column="GENDER" property="gender" /> 
+  <result column="BIRTHDAY" property="birthday" /> 
+  <result column="MARRIAGE" property="marriage" /> 
+  <result column="CHILDREN" property="children" />  
+  <result column="MEMBER_STATUS" property="memberStatus" /> 
+  <result column="MAIN_STAMP" property="mainStamp" /> 
+  <result column="STAMP_COUNT" property="stampCount" /> 
+</resultMap>
+
+
+<resultMap type="Member" id="EventManagerJoinResultMap" extends="MemberResultMap">
+	<association property="eventList"  resultMap="Event.EventResultMap" />
+</resultMap>
+
+
+
+
+<!-- 회원등록 -->
+<insert id="insertMember" parameterType="Member">
+	insert into MEMBER 
+	values(#{userId}, #{nickname}, #{password}, #{memberType}, 
+			#{gender}, #{birthday}, #{marriage}, #{children},
+			#{mainStamp}, #{memberStatus}, 0)
+</insert> 
+
+<!-- 행사담당자회원등록 -->
+<insert id="insertEventManager" parameterType="hashmap">
+	insert into EVENT_MANAGER 
+	values(#{userId}, #{eventId})
+</insert> 
+
+<!-- 회원수정 -->
+<update id="updateMember" parameterType="Member">
+	update MEMBER
+	set  USER_ID = #{userId}, 
+	     NICKNAME = #{nickname}, 
+	     PASSWORD = #{password},
+		 MEMBER_TYPE =  #{memberType}, 
+		 GENDER = #{gender}, 
+		 BIRTHDAY = #{birthday},
+		 MARRIAGE = #{marriage}, 
+		 CHILDREN = #{children}, 
+		 MAIN_STAMP = #{mainStamp},	
+	 	 MEMBER_STATUS = #{memberStatus}, 
+	 	 STAMP_COUNT = #{stampCount}
+	where USER_ID = #{userId}
+</update>
+
+<!-- 회원상태수정 -->
+<update id="updateMemberStatus" parameterType="hashmap">
+	update MEMBER
+	set  MEMBER_STATUS = #{memberStatus}
+	where USER_ID = #{userId}
+</update>
+
+<!-- 회원삭제 -->
+<delete id="deleteMember" parameterType="String">
+	delete from MEMBER where USER_ID = #{userId}
+</delete>
+
+<!-- 전체회원보기 -->
+<select id="selectMemberList" parameterType="map" resultMap="MemberResultMap">
+	select b.* 
+		from  (select c.*, rownum rnum 
+			   from   (
+						select user_id, 
+							   nickname, 
+							   member_type, 
+							   gender, 
+							   to_char(birthday, 'yyyy.mm.dd') as birthday, 
+							   marriage, 
+							   children, 
+							   main_stamp, 
+							   member_status
+						from MEMBER
+						) c
+				) b 
+	where b.rnum between #{startNo} and #{endNo}
+</select>
+
+<!-- 회원상세보기 -->
+<select id="selectMemberById" parameterType="String" resultMap="MemberResultMap">
+	select user_id, 
+		   nickname, 
+		   member_type,  
+		   gender, 
+		   to_char(birthday, 'yyyy.mm.dd') as birthday, 
+		   marriage, 
+		   children, 
+		   main_stamp, 
+		   member_status
+	from MEMBER
+	where USER_ID = #{userId}
+</select>
+
+<!-- 로그인 -->
+<select id="login" parameterType="hashmap" resultMap="MemberResultMap">
+	select user_id, 
+		   nickname, 
+		   member_type, 
+		   gender, 
+		   to_char(birthday, 'yyyy.mm.dd') as birthday, 
+		   marriage, 
+		   children, 
+		   main_stamp, 
+		   member_status
+	from MEMBER
+	where USER_ID = #{userId} and PASSWORD = #{password}
+</select>
+
+<!-- 회원검색 -->
+<select id="selectMemberByUserIdOrNickname" parameterType="hashmap" resultMap="MemberResultMap">
+  select user_id, 
+		   nickname, 
+		   member_type,  
+		   gender, 
+		   to_char(birthday, 'yyyy.mm.dd') as birthday, 
+		   marriage, 
+		   children, 
+		   main_stamp, 
+		   member_status
+  from MEMBER 
+  <where>
+	  <if test="userId != null">USER_ID like '%'|| #{userId} ||'%'</if> 
+	  <if test="nickname != null">or NICKNAME = #{nickname}</if> 
+  </where>
+</select>
+
+<!-- 회원타입으로 보기 -->
+<select id="selectMemberByMemberType" parameterType="String" resultMap="MemberResultMap">
+	select user_id, 
+		   nickname, 
+		   member_type, 
+		   gender, 
+		   to_char(birthday, 'yyyy.mm.dd') as birthday, 
+		   marriage, 
+		   children, 
+		   main_stamp, 
+		   member_status
+	from MEMBER
+	where MEMBER_TYPE = #{memberType}
+</select>
+
+
+<!-- 행사담당자의 담당행사 보기 -->
+<select id="selectEventListByManager" parameterType="String"
+	 resultMap="EventManagerJoinResultMap">
+	select  em.user_id as user_id, 
+			m.nickname as nickname,
+			m.member_type as member_type, 
+		    m.gender as gender, 
+		    to_char(m.birthday, 'yyyy.mm.dd') as birthday, 
+		    m.marriage as marriage, 
+		    m.children as children, 
+		    m.main_stamp as main_stamp, 
+		    m.member_status as member_status, 
+			e.event_id as event_id, 
+			e.event_title as event_title, 
+			e.event_thumbnail as event_thumbnail, 
+			to_char(e.event_start_date, 'yyyy.mm.dd') as event_start_date, 
+			to_char(e.event_end_date, 'yyyy.mm.dd') as event_end_date, 
+			e.event_count as event_count, 
+		    e.category_num as category_num,
+		    e.event_avg_star as event_avg_star
+	from    event_manager em, event e, member m
+	where	em.event_id(+) = e.event_id 
+		and	em.user_id = m.user_id
+		and em.user_id=#{value}
+			
+
+</select>
+
+<select id="selectPageCount" parameterType="map" resultType="int"> 
+		select count(*) from
+			( select * from MEMBER
+			<if test="MEMBER_TYPE != null ">	
+				where MEMBER_TYPE = #{value}
+			</if>	
+			)
+	</select>
+
+
+</mapper>    

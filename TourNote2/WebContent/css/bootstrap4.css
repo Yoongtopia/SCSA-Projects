@@ -1,0 +1,69 @@
+.navbar-default {  
+  vertical-align: middle;
+  background-color: rgb(232, 232, 240);
+  height: 30px;
+  border: none;  
+}
+
+.navbar-form{
+  margin-left: 50px;
+}
+/* 
+.navbar-nav{
+	 visibility: visible; 	 
+} */
+
+
+.box0{
+	margin-left: 40px;
+	margin-bottom: 5px;
+}
+
+.box1{
+	margin-left: 300px;
+}
+
+.box2{
+	margin-left: 60px;	
+}
+
+.box3{
+	margin-left: 100px;	
+}
+
+.box5{
+	margin-left: 130px;
+	margin-bottom: 15px;
+
+}
+
+.form-control2 {
+	margin-top: 7px;
+	display: block;
+	width: 100%;
+	height: 60px;
+	font-size: 14px;
+	color: #555;
+	vertical-align: middle;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out .15s, box-shadow
+		ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+}
+
+.form-control2:focus {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6)
+}
+
+.mapTable{
+	 border-radius: 20px 20px 20px 20px
+}

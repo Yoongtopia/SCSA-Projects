@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+
+	<insert id="insertNotice" parameterType="Notice">
+		insert into NOTICE
+		values(notice_seq.nextval, 'empty', sysdate,
+		#{noticeContent},#{leaderId},#{groupNum})
+	</insert>
+
+	<resultMap type="Notice" id="NoticeResultMap">
+		<id column="notice_num" property="noticeNum" />
+		<result column="notice_title" property="noticeTitle" />
+		<result column="notice_date" property="noticeDate" />
+		<result column="notice_content" property="noticeContent" />
+		<result column="leaderId" property="leaderId" />
+		<result column="group_num" property="groupNum" />
+	</resultMap>
+
+	<delete id="deleteNotice" parameterType="int">
+		delete from Notice where
+		notice_num=#{value}
+	</delete>
+
+	<update id="updateNotice" parameterType="hashmap">
+		update notice
+		set notice_title=#{noticeTitle}, notice_content=#{noticeContent}
+		where notice_num=#{noticeNum}
+	</update>
+
+	<select id="selectMyNotice" parameterType="int" resultMap="NoticeResultMap">
+		select n.notice_num, n.notice_title,to_char(notice_date, 'YYYY.MM.DD')
+		as noticeDate, n.notice_content, n.leaderid, n.group_num
+		
+		from notice n, suser u
+		where n.leaderId=u.userId and
+		n.group_num=#{value}
+		order by n.notice_date
+	</select>
+
+	<select id="selectMyNoticeTab" parameterType="String" resultMap="NoticeTabJoinResultMap">
+		select a.notice_num,
+			   a.notice_title,
+			   a.notice_date,
+			   a.notice_content,
+			   a.group_num,
+			   a.group_name
+		from (select n.notice_num,
+					 n.notice_title,
+					 to_char(n.notice_date, 'yyyy-mm-dd') as notice_date,
+					 n.notice_content,
+					 g.group_num,
+					 g.group_name,
+					 g.leaderid
+			  from notice n,
+			  	   ssgroup g
+			  where n.group_num(+)=g.group_num) a,
+			  suser u
+		where a.leaderid=u.userid(+)
+			  and a.leaderid=#{value}
+		order by a.group_name, a.notice_date
+	</select>
+
+<resultMap type="Group" id="NoticeTabJoinResultMap" extends="Group.GroupResultMap">
+		<collection property="groupNotice" resultMap="Notice.NoticeResultMap"/>
+	</resultMap>
+
+<select id="selectNoticeByNoticeNum" parameterType="int"
+		resultMap="NoticeResultMap">
+		select notice_num, notice_title, to_char(notice_date,
+		'YYYY.MM.DD') as
+		noticeDate, notice_content, leaderid, group_num
+		
+		from notice
+		where notice_num=#{value}
+	</select>
+	<!-- <select id="selectNoticeCount" resultType="int"> select count(*) from 
+		NOTICE </select> -->
+
+	<select id="selectNoticeByNoticeTitle" parameterType="String"
+		resultMap="NoticeResultMap">
+		select notice_num, notice_title, to_char(notice_date,
+		'YYYY.MM.DD') as
+		noticeDate, notice_content, leaderid, group_num,
+		notice_target
+		from notice
+		where notice_title like'%'||#{value}||'%'
+	</select>
+
+	<select id="selectNoticeByNoticeContent" parameterType="String"
+		resultMap="NoticeResultMap">
+		select notice_num, notice_title, to_char(notice_date,
+		'YYYY.MM.DD') as
+		noticeDate, notice_content, leaderid, group_num,
+		notice_target
+		from notice
+		where notice_content like'%'||#{value}||'%'
+	</select>
+
+</mapper>

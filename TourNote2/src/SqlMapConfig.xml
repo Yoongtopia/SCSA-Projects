@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+  <configuration>
+  
+  	<typeAliases>
+   		<typeAlias type="com.scsa.wapl.entity.Board" alias="Board"/>
+   		<typeAlias type="com.scsa.wapl.entity.Member" alias="Member"/>
+  		<typeAlias type="com.scsa.wapl.entity.Photo" alias="Photo"/>
+  		<typeAlias type="com.scsa.wapl.entity.TravelSpot" alias="TravelSpot"/>
+   		<typeAlias type="com.scsa.wapl.entity.RecordRoute" alias="RecordRoute"/>
+   		<typeAlias type="com.scsa.wapl.entity.Transportation" alias="Transportation"/>
+ 		<typeAlias type="com.scsa.wapl.entity.TravelRecord" alias="TravelRecord"/>
+  		<typeAlias type="com.scsa.wapl.entity.TravelRecordReply" alias="TravelRecordReply"/>		
+		<typeAlias type="com.scsa.wapl.entity.TravelTransportation" alias="TravelTransportation"/>  
+  	</typeAliases>
+  	
+  	<mappers>
+  		<mapper resource="mapper/Board.xml"/>
+  		<mapper resource="mapper/Member.xml"/>
+  		<mapper resource="mapper/TravelSpot.xml"/>
+  		<!-- <mapper resource="mapper/Photo.xml"/> -->
+  		<mapper resource="mapper/RecordLocation.xml"/>
+  		<mapper resource="mapper/Transportation.xml"/>
+  		<mapper resource="mapper/TravelRecord.xml"/>
+  		<mapper resource="mapper/TravelRecordReply.xml"/>
+  		<mapper resource="mapper/TravelTransportation.xml"/>
+  		<mapper resource="mapper/Scrap.xml"/>
+  	</mappers>
+  	
+  </configuration>

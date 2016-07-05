@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Pentagon">
+	
+	<insert id="insertPentagon" parameterType="Pentagon">
+		insert into pentagon
+		values (#{stockCode},#{scoreDcf},#{scoreMultiple},#{scoreTrend},#{scoreRisk},#{scoreBigData},#{scoreSum},sysdate()))
+	</insert>
+	
+	<update id="updateDcfScore" parameterType="hashMap">
+		update pentagon
+		set score_dcf=#{scoreDcf}
+		where stock_code=#{stockCode}
+	</update>
+	
+	<update id="updateMultipleScore" parameterType="map">
+		update pentagon
+		set score_multiple=#{value}
+		where stock_code=#{key}
+	</update>
+	
+	<update id="updateTrendScore" parameterType="map">
+		update pentagon
+		set score_trend=#{value}
+		where stock_code=#{key}
+	</update>
+	
+	<update id="updateRiskScore" parameterType="map">
+		update pentagon
+		set score_risk=#{value}
+		where stock_code=#{key}
+	</update>
+	
+	<update id="updateBigData" parameterType="map">
+		update pentagon
+		set score_bigdata=#{value}
+		where stock_code=#{key}
+	</update>
+	
+	<update id="updateSum" parameterType="map">
+		update pentagon
+		set score_sum=#{value}
+		where stock_code=#{key}
+	</update>
+	
+	<update id="updatePentagon" parameterType="Pentagon">
+		update pentagon
+		set score_dcf = #{scoreDcf},
+		score_multiple = #{scoreMultiple},
+		score_risk = #{scoreRisk},
+		score_bigdata = #{scoreBigData},
+		score_trend = #{scoreTrend},
+		score_sum = #{scoreSum},
+		save_Date = sysdate() 
+		where stock_code = #{stockCode}
+	</update>
+	
+		<update id="updatePentagonWithoutDCF" parameterType="Pentagon">
+		update pentagon
+		set score_multiple = #{scoreMultiple}, 
+		score_risk = #{scoreRisk},
+		score_bigdata = #{scoreBigData},
+		score_trend = #{scoreTrend},
+		stock_name = #{stockName},
+		save_Date = sysdate() 
+		where stock_code = #{stockCode}
+	</update>
+	
+<!-- 	<select id="selectPentagon" parameterType="String" resultType="Pentagon">
+		select
+		stock_code as stockCode,
+		score_dcf as scoreDcf,
+		score_multiple as scoreMultiple,
+		score_trend as scoreTrend,
+		score_risk as scoreRisk,
+		score_bigdata as scoreBigdata,
+		score_sum as scoreSum
+		from pentagon
+		where stock_code=#{value}
+	</select> -->
+	
+	
+	<select id="selectScoreByCode" parameterType="String" resultMap="DAOResultMap">
+		select * from pentagon where stock_code=#{value}
+	</select>
+	
+	<select id="selectAllPentagon" resultMap="DAOResultMap">
+		select * from pentagon
+	</select>
+	
+	<select id="selectAllPentagonOrderByDcf" resultMap="DAOResultMap">
+		select * from pentagon order by score_dcf desc limit 6;
+	</select>
+	
+	<select id="selectAllPentagonOrderByMultiple" resultMap="DAOResultMap">
+		select * from pentagon order by score_multiple desc limit 6;
+	</select>
+	
+	<select id="selectAllPentagonOrderByRisk" resultMap="DAOResultMap">
+		select * from pentagon order by score_risk desc limit 6;
+	</select>
+	
+	<select id="selectAllPentagonOrderByBigData" resultMap="DAOResultMap">
+		select * from pentagon order by score_bigdata desc limit 6;
+	</select>
+	
+	<select id="selectAllPentagonOrderByTrend" resultMap="DAOResultMap">
+		select * from pentagon order by score_trend desc limit 6;
+	</select>
+	
+	<select id="selectCustomized" parameterType="hashMap" resultMap="DAOResultMap">
+		select * from pentagon 
+		<where>
+		<if test="limitDcf != null">
+		score_dcf &gt;= #{limitDcf}
+		</if>
+		<if test="limitMultiple != null">
+		and score_multiple &gt;= #{limitMultiple}
+		</if>
+		<if test="limitRisk != null">
+		and score_risk &gt;= #{limitRisk}
+		</if>
+		<if test="limitBigdata != null">
+		and score_bigdata &gt;= #{limitBigdata}
+		</if>
+		<if test="limitTrend != null">
+		and score_trend &gt;= #{limitTrend}
+		</if>
+		</where>
+		
+		order by score_dcf desc, score_multiple desc, score_risk desc, score_bigdata desc, score_trend desc limit 100
+		
+	</select>
+	
+	
+	<select id="selectCustomizedRange" parameterType="hashMap" resultMap="DAOResultMap">
+		select * from pentagon 
+		<where>
+		<if test="leastDcf != null">
+		score_dcf &gt;= #{leastDcf} 
+		</if>
+		<if test="mostDcf != null">
+		and score_dcf &lt; #{mostDcf}
+		</if>
+		<if test="leastMultiple != null">
+		and score_multiple &gt;= #{leastMultiple}
+		</if>
+		<if test="mostMultiple != null">
+		and score_multiple &lt; #{mostMultiple}
+		</if>
+		<if test="leastRisk != null">
+		and score_risk &gt;= #{leastRisk}
+		</if>
+		<if test="mostRisk != null">
+		and score_risk &lt; #{mostRisk}
+		</if>
+		<if test="leastBigdata != null">
+		and score_bigdata &gt;= #{leastBigdata}
+		</if>
+		<if test="mostBigdata != null">
+		and score_bigdata &lt; #{mostBigdata}
+		</if>
+		<if test="leastTrend != null">
+		and score_trend &gt;= #{leastTrend}
+		</if>
+		<if test="mostTrend != null">
+		and score_trend &lt; #{mostTrend}
+		</if>
+		</where>
+		
+		order by score_dcf desc, score_multiple desc, score_risk desc, score_bigdata desc, score_trend desc limit 100
+		
+	</select>
+	
+	
+	<select id="selectPreferTestResult" parameterType="hashMap" resultMap="DAOResultMap">
+		select * from pentagon 
+		<where>
+		<if test="leastDcf != null">
+		score_dcf &gt; = #{leastDcf} 
+		</if>
+		<if test="mostDcf != null">
+		and score_dcf &lt; = #{mostDcf}
+		</if>
+		<if test="leastMultiple != null">
+		and score_multiple &gt;= #{leastMultiple}
+		</if>
+		<if test="mostMultiple != null">
+		and score_multiple &lt; #{mostMultiple}
+		</if>
+		<if test="leastRisk != null">
+		and score_risk &gt;= #{leastRisk}
+		</if>
+		<if test="mostRisk != null">
+		and score_risk &lt; #{mostRisk}
+		</if>
+		<if test="leastBigdata != null">
+		and score_bigdata &gt;= #{leastBigdata}
+		</if>
+		<if test="mostBigdata != null">
+		and score_bigdata &lt; #{mostBigdata}
+		</if>
+		<if test="leastTrend != null">
+		and score_trend &gt;= #{leastTrend}
+		</if>
+		<if test="mostTrend != null">
+		and score_trend &lt; #{mostTrend}
+		</if>
+		</where>
+		
+		order by score_dcf desc, score_multiple desc, score_risk desc, score_bigdata desc, score_trend desc limit 100
+		
+	</select>
+	
+	
+	
+	<!-- property 가 vo column이 DB  -->
+	<resultMap type="Pentagon" id="DAOResultMap">
+		<result column="stock_code" property="stockCode"/>
+		<result column="score_dcf" property="scoreDcf"/>
+		<result column="score_multiple" property="scoreMultiple"/>
+		<result column="score_trend" property="scoreTrend"/>
+		<result column="score_risk" property="scoreRisk"/>
+		<result column="score_bigdata" property="scoreBigData"/>
+		<result column="score_sum" property="scoreSum"/>
+		<result column="stock_name" property="stockName"/>
+		<result column="save_date" property="saveDate"/>
+	
+
+	</resultMap>
+	
+</mapper>

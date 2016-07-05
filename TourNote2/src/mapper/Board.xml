@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="Board">
+    
+    	<insert id="insertBoard" parameterType="Board">
+    		insert into Board values(board_seq.nextval, 
+    		#{boardCategory}, board_seq.nextval, #{boardWriter}, 
+    		#{boardTitle}, #{boardCont}, sysdate, 0, #{boardStatus}, 0)
+    	</insert>
+    	    	
+    	<insert id="insertNotice" parameterType="Board">
+    		insert into Board values(board_seq.nextval, 
+    		#{boardCategory}, board_seq.nextval, #{boardWriter}, 
+    		#{boardTitle}, #{boardCont}, sysdate, 0, '', 0)
+    	</insert>
+    	
+    	<insert id="insertBoardAnswer" parameterType="Board">
+    		insert into Board values(board_seq.nextval, 
+    		#{boardCategory}, #{boardNum}, #{boardWriter}, 
+    		#{boardTitle}, #{boardCont}, sysdate, 0, #{boardStatus}, #{boardNum})
+    	</insert>
+    	
+    	<update id="updateBoard" parameterType="Board">
+    		update Board set board_title=#{boardTitle}, 
+    		board_cont=#{boardCont}, board_date=sysdate 
+    		where board_num=#{boardNum}
+    	</update>
+    
+    	<delete id="deleteBoard" parameterType="Board">
+    		delete from Board where board_num=#{boardNum}
+    	</delete>
+    	
+    	<update id="updateBoardCount" parameterType="int">
+    		update Board set board_hit=board_hit+1
+    		where board_num=#{value}
+    	</update>
+    	
+    	<select id="listCount" parameterType="String" resultType="int">
+    		select count(*) from board where board_category=#{value}
+    	</select>
+    	
+    	<select id="selectBoard" parameterType="int"
+    	resultMap="BoardResultMap">
+    		select board_num,
+				board_category,
+				board_writer,
+				board_title,
+				board_cont,
+				to_char(board_date, 'yy/mm/dd') as board_date,
+				board_hit,
+				board_status,
+				boardparent_num,
+				depth 
+			from board where board_num=#{value}
+    	</select>
+    	
+    	<select id="selectBoardListByCategory" parameterType="map"
+    	resultMap="BoardResultMap">
+		select * from(select a.*, rownum as rnum from
+			(select level, 
+				board_num, 
+				board_category,
+				board_writer,
+				board_title,
+				board_cont,
+				to_char(board_date, 'yy/mm/dd') as board_date,
+				board_hit,
+				board_status,
+				boardparent_num,
+				depth 
+				from board where board_category=#{boardCategory} 
+				start with boardparent_num=0 
+				connect by prior board_num=boardparent_num 
+				order siblings by depth desc) a) 
+				where rnum between #{startNo} and #{endNo}
+		</select>
+		
+		<select id="selectBoardListByFaq" parameterType="String"
+    	resultMap="BoardResultMap">
+			select level as "level", 
+				board_num, 
+				board_category,
+				board_writer,
+				board_title,
+				board_cont,
+				to_char(board_date, 'yy/mm/dd') as board_date,
+				board_hit,
+				board_status,
+				boardparent_num,
+				depth 
+				from board where board_category=#{value}
+				start with boardparent_num=0 
+				connect by prior board_num=boardparent_num 
+				order siblings by depth desc		
+		</select>
+		
+    	<select id="selectBoardListById" parameterType="String"
+    	resultMap="BoardResultMap">
+    		select * from Board where board_writer=#{value}
+    	</select>
+    	
+    	<select id="selectBoardListByTitle" parameterType="String"
+    	resultMap="BoardResultMap">
+    	    select * from Board where board_title=#{value}
+    	</select>
+    	
+    	<resultMap type="Board" id="BoardResultMap">
+			<id column="board_num" property="boardNum"/>
+			<result column="board_category" property="boardCategory"/>
+			<result column="board_writer" property="boardWriter"/>
+			<result column="board_title" property="boardTitle"/>
+			<result column="board_cont" property="boardCont"/>
+			<result column="board_date" property="boardDate"/>
+			<result column="board_hit" property="boardHit"/>
+			<result column="board_status" property="boardStatus"/>
+			<result column="depth" property="depth"/>
+			<result column="boardparent_num" property="boardParentNum"/>
+			<result column="level" property="level"/>
+		</resultMap>
+    	
+    	<select id="selectBoardbyTitleOrWriter" parameterType="String"
+    	resultMap="BoardResultMap">
+    		select * from board where board_title like '%'||#{value}||'%' order by board_num		
+    	</select>
+    </mapper>

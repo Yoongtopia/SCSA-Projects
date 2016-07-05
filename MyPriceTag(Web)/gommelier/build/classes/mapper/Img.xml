@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="Img">
+
+	<resultMap type="Img" id="ImgResultMap">
+		<id column="img_num" property="img_num"/>
+		<result column="product_num" property="product_num"/>
+		<result column="img" property="img"/>
+		<result column="img_main" property="img_main"/>
+	</resultMap>
+
+</mapper>
